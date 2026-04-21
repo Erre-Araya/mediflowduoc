@@ -1,0 +1,514 @@
+CREATE TABLE CENTRO_SALUD 
+    ( 
+     id_centro_salud VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     nombre          VARCHAR2 (500 CHAR)  NOT NULL , 
+     direccion       VARCHAR2 (500 CHAR)  NOT NULL , 
+     telefono        VARCHAR2 (12 CHAR)  NOT NULL 
+    ) 
+;
+
+ALTER TABLE CENTRO_SALUD 
+    ADD CONSTRAINT CENTRO_SALUD_PK PRIMARY KEY ( id_centro_salud ) ;
+
+CREATE TABLE CITA 
+    ( 
+     id_cita                      VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     fecha                        DATE  NOT NULL , 
+     hora                         DATE  NOT NULL , 
+     estado                       VARCHAR2 (20 CHAR)  NOT NULL , 
+     motivo                       VARCHAR2 (100 CHAR)  NOT NULL , 
+     observaciones                VARCHAR2 (200 CHAR) , 
+     USUARIO_id_usuario           VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     Especialidad_id_especialidad VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     TELECONSULTA_id_teleconsulta VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+CREATE UNIQUE INDEX CITA__IDX ON CITA 
+    ( 
+     Especialidad_id_especialidad ASC 
+    ) 
+;
+CREATE UNIQUE INDEX CITA__IDXv1 ON CITA 
+    ( 
+     TELECONSULTA_id_teleconsulta ASC 
+    ) 
+;
+
+ALTER TABLE CITA 
+    ADD CONSTRAINT CITA_PK PRIMARY KEY ( id_cita ) ;
+
+CREATE TABLE COMUNA 
+    ( 
+     id_comuna        VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     nombre           VARCHAR2 (100 CHAR)  NOT NULL , 
+     activo           CHAR (1)  NOT NULL , 
+     Region_id_region VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+
+ALTER TABLE COMUNA 
+    ADD CONSTRAINT COMUNA_PK PRIMARY KEY ( id_comuna ) ;
+
+CREATE TABLE EQUIPO_MEDICO 
+    ( 
+     id_equipo                               VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     nombre                                  VARCHAR2 (50 CHAR)  NOT NULL , 
+     descripcion                             VARCHAR2 (100) , 
+     SERVICIO_id_servicio                    VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+--  ERROR: Column name length exceeds maximum allowed length(30) 
+     EQUIPO_PROFESIONAL_id_equipoProfesional VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+
+ALTER TABLE EQUIPO_MEDICO 
+    ADD CONSTRAINT EQUIPO_MEDICO_PK PRIMARY KEY ( id_equipo ) ;
+
+CREATE TABLE EQUIPO_PROFESIONAL 
+    ( 
+     id_equipoProfesional VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     nombre               VARCHAR2 (50 CHAR)  NOT NULL , 
+     descripcion          VARCHAR2 (100) , 
+     SERVICIO_id_servicio VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+
+ALTER TABLE EQUIPO_PROFESIONAL 
+    ADD CONSTRAINT EQUIPO_PROFESIONAL_PK PRIMARY KEY ( id_equipoProfesional ) ;
+
+CREATE TABLE Especialidad 
+    ( 
+     id_especialidad VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     nombre          VARCHAR2 (50 CHAR)  NOT NULL , 
+     descripcion     VARCHAR2 (200 CHAR)  NOT NULL , 
+     CITA_id_cita    VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+CREATE UNIQUE INDEX Especialidad__IDX ON Especialidad 
+    ( 
+     CITA_id_cita ASC 
+    ) 
+;
+
+ALTER TABLE Especialidad 
+    ADD CONSTRAINT Especialidad_PK PRIMARY KEY ( id_especialidad ) ;
+
+CREATE TABLE HISTORIAL_CLINICO 
+    ( 
+     id_historial         VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     fecha                DATE  NOT NULL , 
+     diagnostico          VARCHAR2 (100 CHAR)  NOT NULL , 
+     tratamiento          VARCHAR2 (500 CHAR)  NOT NULL , 
+     comentarios          VARCHAR2 (500) , 
+     PACIENTE_id_paciente VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+
+ALTER TABLE HISTORIAL_CLINICO 
+    ADD CONSTRAINT HISTORIAL_CLINICO_PK PRIMARY KEY ( id_historial ) ;
+
+CREATE TABLE PACIENTE 
+    ( 
+     id_paciente        VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     USUARIO_id_usuario VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     prevision          VARCHAR2 (50 CHAR)  NOT NULL , 
+     observacion        VARCHAR2 (200 CHAR) 
+    ) 
+;
+CREATE UNIQUE INDEX PACIENTE__IDX ON PACIENTE 
+    ( 
+     USUARIO_id_usuario ASC 
+    ) 
+;
+
+ALTER TABLE PACIENTE 
+    ADD CONSTRAINT PACIENTE_PK PRIMARY KEY ( id_paciente ) ;
+
+CREATE TABLE PROFESIONAL_SALUD 
+    ( 
+     id_profesional               VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     horario_atencion             DATE  NOT NULL , 
+     USUARIO_id_usuario           VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     numero_registro              INTEGER  NOT NULL , 
+     disponibilidad               CHAR (1)  NOT NULL , 
+     Especialidad_id_especialidad VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+CREATE UNIQUE INDEX PROFESIONAL_SALUD__IDX ON PROFESIONAL_SALUD 
+    ( 
+     USUARIO_id_usuario ASC 
+    ) 
+;
+
+ALTER TABLE PROFESIONAL_SALUD 
+    ADD CONSTRAINT PROFESIONAL_SALUD_PK PRIMARY KEY ( id_profesional ) ;
+
+CREATE TABLE PROFESIONAL_SERVICIO 
+    ( 
+     id_profesional_servicio          VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     SERVICIO_id_servicio             VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+--  ERROR: Column name length exceeds maximum allowed length(30) 
+     PROFESIONAL_SALUD_id_profesional VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     precio                           INTEGER  NOT NULL , 
+     duracion                         DATE  NOT NULL , 
+     activo                           CHAR (1)  NOT NULL , 
+     fecha_creacion                   DATE  NOT NULL 
+    ) 
+;
+
+ALTER TABLE PROFESIONAL_SERVICIO 
+    ADD CONSTRAINT PROFESIONAL_SERVICIO_PK PRIMARY KEY ( id_profesional_servicio ) ;
+
+CREATE TABLE Region 
+    ( 
+     id_region VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     nombre    VARCHAR2 (50 CHAR)  NOT NULL , 
+     codigo    VARCHAR2 (20 CHAR) , 
+     activo    CHAR (1)  NOT NULL 
+    ) 
+;
+
+ALTER TABLE Region 
+    ADD CONSTRAINT Region_PK PRIMARY KEY ( id_region ) ;
+
+CREATE TABLE SERVICIO 
+    ( 
+     id_servicio                  VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     nombre                       VARCHAR2 (100 CHAR)  NOT NULL , 
+     descripcion                  VARCHAR2 (200 CHAR)  NOT NULL , 
+     duracion_minutos             INTEGER , 
+     activo                       CHAR (1)  NOT NULL , 
+     CENTRO_SALUD_id_centro_salud VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+
+ALTER TABLE SERVICIO 
+    ADD CONSTRAINT SERVICIO_PK PRIMARY KEY ( id_servicio ) ;
+
+CREATE TABLE TELECONSULTA 
+    ( 
+     id_teleconsulta VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     fecha_ini       DATE  NOT NULL , 
+     fecha_termino   DATE  NOT NULL , 
+     CITA_id_cita    VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+CREATE UNIQUE INDEX TELECONSULTA__IDX ON TELECONSULTA 
+    ( 
+     CITA_id_cita ASC 
+    ) 
+;
+
+ALTER TABLE TELECONSULTA 
+    ADD CONSTRAINT TELECONSULTA_PK PRIMARY KEY ( id_teleconsulta ) ;
+
+CREATE TABLE USUARIO 
+    ( 
+     id_usuario                       VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     run                              VARCHAR2 (12 CHAR)  NOT NULL , 
+     nombres                          VARCHAR2 (50 CHAR)  NOT NULL , 
+     apellidos                        VARCHAR2 (50 CHAR)  NOT NULL , 
+     correo                           VARCHAR2 (100 CHAR)  NOT NULL , 
+     password                         VARCHAR2 (20 CHAR)  NOT NULL , 
+     rol                              VARCHAR2 (20 CHAR)  NOT NULL , 
+     direccion                        VARCHAR2 (200 CHAR)  NOT NULL , 
+     activo                           CHAR (1)  NOT NULL , 
+     telefono                         VARCHAR2 (12 CHAR)  NOT NULL , 
+     fecha_registro                   DATE  NOT NULL , 
+     COMUNA_id_comuna                 VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+     PACIENTE_id_paciente             VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL , 
+--  ERROR: Column name length exceeds maximum allowed length(30) 
+     PROFESIONAL_SALUD_id_profesional VARCHAR2 
+--  ERROR: VARCHAR2 size not specified 
+                     NOT NULL 
+    ) 
+;
+CREATE UNIQUE INDEX USUARIO__IDX ON USUARIO 
+    ( 
+     PACIENTE_id_paciente ASC 
+    ) 
+;
+CREATE UNIQUE INDEX USUARIO__IDXv1 ON USUARIO 
+    ( 
+     PROFESIONAL_SALUD_id_profesional ASC 
+    ) 
+;
+
+ALTER TABLE USUARIO 
+    ADD CONSTRAINT USUARIO_PK PRIMARY KEY ( id_usuario ) ;
+
+ALTER TABLE CITA 
+    ADD CONSTRAINT CITA_Especialidad_FK FOREIGN KEY 
+    ( 
+     Especialidad_id_especialidad
+    ) 
+    REFERENCES Especialidad 
+    ( 
+     id_especialidad
+    ) 
+;
+
+ALTER TABLE CITA 
+    ADD CONSTRAINT CITA_TELECONSULTA_FK FOREIGN KEY 
+    ( 
+     TELECONSULTA_id_teleconsulta
+    ) 
+    REFERENCES TELECONSULTA 
+    ( 
+     id_teleconsulta
+    ) 
+;
+
+ALTER TABLE CITA 
+    ADD CONSTRAINT CITA_USUARIO_FK FOREIGN KEY 
+    ( 
+     USUARIO_id_usuario
+    ) 
+    REFERENCES USUARIO 
+    ( 
+     id_usuario
+    ) 
+;
+
+ALTER TABLE COMUNA 
+    ADD CONSTRAINT COMUNA_Region_FK FOREIGN KEY 
+    ( 
+     Region_id_region
+    ) 
+    REFERENCES Region 
+    ( 
+     id_region
+    ) 
+;
+
+--  ERROR: FK name length exceeds maximum allowed length(30) 
+ALTER TABLE EQUIPO_MEDICO 
+    ADD CONSTRAINT EQUIPO_MEDICO_EQUIPO_PROFESIONAL_FK FOREIGN KEY 
+    ( 
+     EQUIPO_PROFESIONAL_id_equipoProfesional
+    ) 
+    REFERENCES EQUIPO_PROFESIONAL 
+    ( 
+     id_equipoProfesional
+    ) 
+;
+
+ALTER TABLE EQUIPO_MEDICO 
+    ADD CONSTRAINT EQUIPO_MEDICO_SERVICIO_FK FOREIGN KEY 
+    ( 
+     SERVICIO_id_servicio
+    ) 
+    REFERENCES SERVICIO 
+    ( 
+     id_servicio
+    ) 
+;
+
+ALTER TABLE EQUIPO_PROFESIONAL 
+    ADD CONSTRAINT EQUIPO_PROFESIONAL_SERVICIO_FK FOREIGN KEY 
+    ( 
+     SERVICIO_id_servicio
+    ) 
+    REFERENCES SERVICIO 
+    ( 
+     id_servicio
+    ) 
+;
+
+ALTER TABLE Especialidad 
+    ADD CONSTRAINT Especialidad_CITA_FK FOREIGN KEY 
+    ( 
+     CITA_id_cita
+    ) 
+    REFERENCES CITA 
+    ( 
+     id_cita
+    ) 
+;
+
+ALTER TABLE HISTORIAL_CLINICO 
+    ADD CONSTRAINT HISTORIAL_CLINICO_PACIENTE_FK FOREIGN KEY 
+    ( 
+     PACIENTE_id_paciente
+    ) 
+    REFERENCES PACIENTE 
+    ( 
+     id_paciente
+    ) 
+;
+
+ALTER TABLE PACIENTE 
+    ADD CONSTRAINT PACIENTE_USUARIO_FK FOREIGN KEY 
+    ( 
+     USUARIO_id_usuario
+    ) 
+    REFERENCES USUARIO 
+    ( 
+     id_usuario
+    ) 
+;
+
+--  ERROR: FK name length exceeds maximum allowed length(30) 
+ALTER TABLE PROFESIONAL_SALUD 
+    ADD CONSTRAINT PROFESIONAL_SALUD_Especialidad_FK FOREIGN KEY 
+    ( 
+     Especialidad_id_especialidad
+    ) 
+    REFERENCES Especialidad 
+    ( 
+     id_especialidad
+    ) 
+;
+
+ALTER TABLE PROFESIONAL_SALUD 
+    ADD CONSTRAINT PROFESIONAL_SALUD_USUARIO_FK FOREIGN KEY 
+    ( 
+     USUARIO_id_usuario
+    ) 
+    REFERENCES USUARIO 
+    ( 
+     id_usuario
+    ) 
+;
+
+--  ERROR: FK name length exceeds maximum allowed length(30) 
+ALTER TABLE PROFESIONAL_SERVICIO 
+    ADD CONSTRAINT PROFESIONAL_SERVICIO_PROFESIONAL_SALUD_FK FOREIGN KEY 
+    ( 
+     PROFESIONAL_SALUD_id_profesional
+    ) 
+    REFERENCES PROFESIONAL_SALUD 
+    ( 
+     id_profesional
+    ) 
+;
+
+--  ERROR: FK name length exceeds maximum allowed length(30) 
+ALTER TABLE PROFESIONAL_SERVICIO 
+    ADD CONSTRAINT PROFESIONAL_SERVICIO_SERVICIO_FK FOREIGN KEY 
+    ( 
+     SERVICIO_id_servicio
+    ) 
+    REFERENCES SERVICIO 
+    ( 
+     id_servicio
+    ) 
+;
+
+ALTER TABLE SERVICIO 
+    ADD CONSTRAINT SERVICIO_CENTRO_SALUD_FK FOREIGN KEY 
+    ( 
+     CENTRO_SALUD_id_centro_salud
+    ) 
+    REFERENCES CENTRO_SALUD 
+    ( 
+     id_centro_salud
+    ) 
+;
+
+ALTER TABLE TELECONSULTA 
+    ADD CONSTRAINT TELECONSULTA_CITA_FK FOREIGN KEY 
+    ( 
+     CITA_id_cita
+    ) 
+    REFERENCES CITA 
+    ( 
+     id_cita
+    ) 
+;
+
+ALTER TABLE USUARIO 
+    ADD CONSTRAINT USUARIO_COMUNA_FK FOREIGN KEY 
+    ( 
+     COMUNA_id_comuna
+    ) 
+    REFERENCES COMUNA 
+    ( 
+     id_comuna
+    ) 
+;
+
+ALTER TABLE USUARIO 
+    ADD CONSTRAINT USUARIO_PACIENTE_FK FOREIGN KEY 
+    ( 
+     PACIENTE_id_paciente
+    ) 
+    REFERENCES PACIENTE 
+    ( 
+     id_paciente
+    ) 
+;
+
+ALTER TABLE USUARIO 
+    ADD CONSTRAINT USUARIO_PROFESIONAL_SALUD_FK FOREIGN KEY 
+    ( 
+     PROFESIONAL_SALUD_id_profesional
+    ) 
+    REFERENCES PROFESIONAL_SALUD 
+    ( 
+     id_profesional
+    ) 
+;
