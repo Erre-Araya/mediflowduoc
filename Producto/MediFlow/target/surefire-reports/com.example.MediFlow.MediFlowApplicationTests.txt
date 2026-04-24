@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.example.MediFlow.MediFlowApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.423 s -- in com.example.MediFlow.MediFlowApplicationTests
