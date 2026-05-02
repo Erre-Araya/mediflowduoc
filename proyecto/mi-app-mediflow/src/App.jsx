@@ -13,6 +13,8 @@ import AdminCreateProfessional from "./pages/AdminCreateProfessional";
 import AdminCreateSpecialty from "./pages/AdminCreateSpecialty";
 import ProfessionalAppointments from "./pages/ProfessionalAppointments";
 import ProfessionalCreateAppointment from "./pages/ProfessionalCreateAppointment";
+import CreatePatient from "./pages/CreatePatient";
+
 
 function App() {
   return (
@@ -30,7 +32,9 @@ function App() {
         <Route path="/admin/profesionales/crear" element={<AdminCreateProfessional />} />
         <Route path="/admin/especialidades/crear" element={<AdminCreateSpecialty />} />
         <Route path="/profesional/citas" element={<ProfessionalAppointments />} />
-        <Route path="/profesional/agendar" element={<ProfessionalCreateAppointment />}/>
+        <Route path="/profesional/agendar" element={<ProfessionalCreateAppointment />} />
+        <Route path="/create-patient" element={<CreatePatient />} />
+
 
         <Route path="*" element={<NotFound />} />
       </Routes>

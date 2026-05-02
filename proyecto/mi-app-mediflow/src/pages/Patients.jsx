@@ -4,12 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function Patients() {
   const [patients, setPatients] = useState([]);
-
   const user = JSON.parse(localStorage.getItem("user"));
-
-  if (!user || (user.rol !== "PROFESIONAL" && user.rol !== "ADMIN")) {
-    return <p>No tienes acceso a esta página</p>;
-  }
 
   useEffect(() => {
     fetch("http://localhost:8080/api/usuarios/rol/PACIENTE", {
@@ -24,6 +19,11 @@ export default function Patients() {
       })
       .catch(err => console.error(err));
   }, []);
+
+
+  if (!user || (user.rol !== "PROFESIONAL" && user.rol !== "ADMIN")) {
+  return <p>No tienes acceso a esta página</p>;
+  }
 
   return (
     <>
