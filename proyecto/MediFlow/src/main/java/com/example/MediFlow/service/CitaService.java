@@ -3,9 +3,11 @@ package com.example.MediFlow.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.MediFlow.dto.UsuarioDTO;
 import com.example.MediFlow.model.Cita;
 import com.example.MediFlow.model.Especialidad;
 import com.example.MediFlow.model.ProfesionalSalud;
@@ -90,6 +92,13 @@ public class CitaService {
         return citaRepository.findByProfesional_Usuario_Id(usuarioId);
     }
 
+    public List<UsuarioDTO> obtenerPacientesPorProfesional(Long usuarioId) {
+    return citaRepository.findPacientesByProfesionalUsuarioId(usuarioId)
+        .stream()
+        .map(UsuarioDTO::fromEntity)
+        .collect(Collectors.toList());
+    }
+    
     public Cita cambiarEstado(Long citaId, String estado) {
         Cita cita = citaRepository.findById(citaId)
                 .orElseThrow(() -> new RuntimeException("Cita no encontrada"));

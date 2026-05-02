@@ -74,6 +74,15 @@ public class CitaController {
         return ResponseEntity.ok(citaService.obtenerPorProfesionalUsuario(usuarioId));
     }
 
+    @GetMapping("/pacientes/profesional/{usuarioId}")
+    public ResponseEntity<?> obtenerPacientesPorProfesional(@PathVariable Long usuarioId) {
+        try {
+            return ResponseEntity.ok(citaService.obtenerPacientesPorProfesional(usuarioId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
     @PatchMapping("/{id}/estado")
     public ResponseEntity<?> cambiarEstado(
             @PathVariable Long id,
@@ -86,6 +95,5 @@ public class CitaController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
-    }
-
+    }  
 }
