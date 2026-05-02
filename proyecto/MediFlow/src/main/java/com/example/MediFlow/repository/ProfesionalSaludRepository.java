@@ -11,4 +11,6 @@ public interface ProfesionalSaludRepository extends JpaRepository<ProfesionalSal
 
     Optional<ProfesionalSalud> findByUsuarioId(Long usuarioId);
     List<ProfesionalSalud> findByEspecialidadId(Long especialidadId);
+    List<ProfesionalSalud> findByEspecialidad_Id(Long especialidadId);
+    
 }

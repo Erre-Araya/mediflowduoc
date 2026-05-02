@@ -126,13 +126,13 @@ El sistema está basado en una arquitectura de 3 capas:
 
 #### Frontend
 
-* React 19
-* JavaScript ES16
+* React
+* JavaScript
 * CSS
 
 #### Backend
 
-* Spring Boot 4.0.4
+* Spring Boot
 * Node.js
 
 #### Librerías y Herramientas

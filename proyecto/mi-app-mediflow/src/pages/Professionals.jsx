@@ -8,20 +8,10 @@ export default function Professionals() {
     const user = JSON.parse(localStorage.getItem("user"));
 
         useEffect(() => {
-            fetch("http://localhost:8080/api/usuarios/rol/PROFESIONAL", {
-                headers: {
-                rol: user?.rol
-                }
-            })
-                .then(res => {
-                if (!res.ok) throw new Error("No autorizado");
-                return res.json();
-                })
-                .then(data => setProfessionals(data))
-                .catch(err => {
-                console.error(err);
-                setProfessionals([]); // evita crash
-                });
+            fetch("http://localhost:8080/api/profesionales")
+                .then(res => res.json())
+                .then(data => setProfessionals(Array.isArray(data) ? data : []))
+                .catch(err => console.error(err));
             }, []);
 
   return (
@@ -32,11 +22,12 @@ export default function Professionals() {
         <h2>Profesionales</h2>
 
         <ul>
-            {professionals.map(p => (
+            {professionals.map((p) => (
             <li key={p.id}>
-                {p.nombres} {p.apellidos}
+                {p.usuario?.nombres} {p.usuario?.apellidos} - {p.especialidad?.nombre} - {p.horaInicio} a {p.horaFin}
             </li>
             ))}
+            
         </ul>
         </div>
 

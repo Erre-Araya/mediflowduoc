@@ -1,21 +1,28 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createAppointment } from "../services/appointmentService";
 
-export default function CreateAppointment() {
+export default function ProfessionalCreateAppointment() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [pacientes, setPacientes] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
   const [profesionales, setProfesionales] = useState([]);
 
   const [form, setForm] = useState({
+    pacienteId: "",
+    especialidadId: "",
+    profesionalId: "",
     fecha: "",
     hora: "",
     motivo: "",
-    especialidadId: "",
-    profesionalId: ""
+    observaciones: ""
   });
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || user.rol !== "PROFESIONAL") {
+    return <p>No tienes acceso</p>;
+  }
 
   const generarHoras = (inicio, fin) => {
     const horas = [];
@@ -47,14 +54,14 @@ export default function CreateAppointment() {
     ? generarHoras(profesionalSeleccionado.horaInicio, profesionalSeleccionado.horaFin)
     : [];
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-  };
-
   useEffect(() => {
+    fetch("http://localhost:8080/api/usuarios/rol/PACIENTE", {
+      headers: { rol: user.rol }
+    })
+      .then(res => res.json())
+      .then(data => setPacientes(Array.isArray(data) ? data : []))
+      .catch(err => console.error(err));
+
     fetch("http://localhost:8080/api/especialidades")
       .then(res => res.json())
       .then(data => setEspecialidades(Array.isArray(data) ? data : []))
@@ -72,33 +79,42 @@ export default function CreateAppointment() {
     }
   }, [form.especialidadId]);
 
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await createAppointment({
-        usuarioId: user.id,
+        usuarioId: form.pacienteId,
         especialidadId: form.especialidadId,
         profesionalId: form.profesionalId,
         fecha: form.fecha,
         hora: form.hora,
         motivo: form.motivo,
-        observaciones: ""
+        observaciones: form.observaciones
       });
 
-      alert("Cita creada correctamente");
+      alert("Cita agendada correctamente");
 
       setForm({
+        pacienteId: "",
+        especialidadId: "",
+        profesionalId: "",
         fecha: "",
         hora: "",
         motivo: "",
-        especialidadId: "",
-        profesionalId: ""
+        observaciones: ""
       });
 
-    } catch (err) {
-      console.error(err);
-      alert(err.message || "Error al crear la cita");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Error al agendar cita");
     }
   };
 
@@ -107,9 +123,21 @@ export default function CreateAppointment() {
       <Header />
 
       <div style={{ padding: "20px" }}>
-        <h2>Agendar Cita</h2>
+        <h2>Agendar cita para paciente</h2>
 
         <form onSubmit={handleSubmit}>
+
+          <select name="pacienteId" value={form.pacienteId} onChange={handleChange} required>
+            <option value="">Seleccione paciente</option>
+            {pacientes.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nombres} {p.apellidos} - {p.correo}
+              </option>
+            ))}
+          </select>
+
+          <br /><br />
+
           <select
             name="especialidadId"
             value={form.especialidadId}
@@ -124,10 +152,9 @@ export default function CreateAppointment() {
             required
           >
             <option value="">Seleccione especialidad</option>
-
-            {especialidades.map((esp) => (
-              <option key={esp.id} value={esp.id}>
-                {esp.nombre}
+            {especialidades.map((e) => (
+              <option key={e.id} value={e.id}>
+                {e.nombre}
               </option>
             ))}
           </select>
@@ -148,10 +175,9 @@ export default function CreateAppointment() {
             required
           >
             <option value="">Seleccione profesional</option>
-
             {profesionales.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.usuario?.nombres} {p.usuario?.apellidos} - {p.horaInicio} a {p.horaFin}
+                {p.usuario?.nombres} {p.usuario?.apellidos} - {p.especialidad?.nombre} - {p.horaInicio} a {p.horaFin}
               </option>
             ))}
           </select>
@@ -176,7 +202,6 @@ export default function CreateAppointment() {
             required
           >
             <option value="">Seleccione hora</option>
-
             {horasDisponibles.map((hora) => (
               <option key={hora} value={hora}>
                 {hora}
@@ -195,7 +220,16 @@ export default function CreateAppointment() {
 
           <br /><br />
 
-          <button type="submit">Guardar</button>
+          <textarea
+            name="observaciones"
+            placeholder="Observaciones / derivación"
+            value={form.observaciones}
+            onChange={handleChange}
+          />
+
+          <br /><br />
+
+          <button type="submit">Agendar cita</button>
         </form>
       </div>
 

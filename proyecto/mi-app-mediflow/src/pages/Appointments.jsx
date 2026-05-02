@@ -36,6 +36,7 @@ export default function Appointments() {
               <th>Hora</th>
               <th>Estado</th>
               <th>Motivo</th>
+              <th>Profesional</th>
             </tr>
           </thead>
           <tbody>
@@ -46,6 +47,7 @@ export default function Appointments() {
                 <td>{cita.hora}</td>
                 <td>{cita.estadoCita}</td>
                 <td>{cita.motivo} </td>
+                <td>{cita.profesional?.usuario?.nombres} {cita.profesional?.usuario?.apellidos}</td>
               </tr>
             ))}
           </tbody>

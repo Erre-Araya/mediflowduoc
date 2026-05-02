@@ -1,6 +1,8 @@
 package com.example.MediFlow.model;
 
 
+import java.time.LocalTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,8 +40,11 @@ public class ProfesionalSalud {
     @Column(name = "numero_registro")
     private String numeroRegistro;
 
-    @Column(name = "horario_atencion")
-    private String horarioAtencion;
+    @Column(name = "hora_inicio")
+    private LocalTime horaInicio;
     
+    @Column(name = "hora_fin")
+    private LocalTime horaFin;
+
     private Boolean disponible;
 }

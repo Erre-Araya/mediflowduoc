@@ -27,47 +27,76 @@ public class CitaService {
     private final EspecialidadRepository especialidadRepository;
     private final ProfesionalSaludRepository profesionalRepository;
 
-    public Cita crear(Long usuarioId, Long especialidadId, LocalDate fecha, LocalTime hora, String motivo, String observaciones){
+    public Cita crear(
+            Long usuarioId,
+            Long especialidadId,
+            Long profesionalId,
+            LocalDate fecha,
+            LocalTime hora,
+            String motivo,
+            String observaciones
+    ) {
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Especialidad especialidad = especialidadRepository.findById(especialidadId)
-            .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+
+        ProfesionalSalud profesional = profesionalRepository.findById(profesionalId)
+                .orElseThrow(() -> new RuntimeException("Profesional no encontrado"));
+
+        if (hora.getMinute() != 0 && hora.getMinute() != 30) {
+            throw new RuntimeException("Las citas solo pueden agendarse cada 30 minutos");
+        }
+
+        if (hora.getSecond() != 0 || hora.getNano() != 0) {
+            throw new RuntimeException("Hora inválida");
+        }
+
+        if (profesional.getHoraInicio() != null && profesional.getHoraFin() != null) {
+            if (hora.isBefore(profesional.getHoraInicio()) || !hora.isBefore(profesional.getHoraFin())) {
+                throw new RuntimeException("La hora está fuera del horario de atención del profesional");
+            }
+        }
 
         if (citaRepository.existsByUsuario_IdAndFechaAndHora(usuarioId, fecha, hora)) {
             throw new RuntimeException("El usuario ya tiene una cita en esa fecha y hora");
         }
 
-        ProfesionalSalud profesional = profesionalRepository
-            .findByEspecialidadId(especialidadId)
-            .stream()
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("No hay profesionales disponibles"));
-
-        boolean ocupado = citaRepository.existsByProfesionalAndFechaAndHora(
-            profesional, fecha, hora
-        );
-
-        if (ocupado) {
-            throw new RuntimeException("El profesional ya tiene una cita en ese horario");
+        if (citaRepository.existsByProfesional_IdAndFechaAndHora(profesionalId, fecha, hora)) {
+            throw new RuntimeException("El profesional ya tiene una cita en esa fecha y hora");
         }
 
         Cita cita = Cita.builder()
-            .usuario(usuario)
-            .especialidad(especialidad)
-            .profesional(profesional)
-            .fecha(fecha)
-            .hora(hora)
-            .estadoCita(EstadoCita.PENDIENTE)
-            .motivo(motivo)
-            .observaciones(observaciones)
-            .build();
+                .usuario(usuario)
+                .especialidad(especialidad)
+                .profesional(profesional)
+                .fecha(fecha)
+                .hora(hora)
+                .estadoCita(EstadoCita.PENDIENTE)
+                .motivo(motivo)
+                .observaciones(observaciones)
+                .build();
 
         return citaRepository.save(cita);
     }
 
     public List<Cita> obtenerPorUsuario(Long usuarioId) {
-    return citaRepository.findByUsuario_Id(usuarioId);
+        return citaRepository.findByUsuario_Id(usuarioId);
+    }
+
+    public List<Cita> obtenerPorProfesionalUsuario(Long usuarioId) {
+        return citaRepository.findByProfesional_Usuario_Id(usuarioId);
+    }
+
+    public Cita cambiarEstado(Long citaId, String estado) {
+        Cita cita = citaRepository.findById(citaId)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+
+        EstadoCita nuevoEstado = EstadoCita.valueOf(estado.toUpperCase());
+        cita.setEstadoCita(nuevoEstado);
+
+        return citaRepository.save(cita);
     }
 }

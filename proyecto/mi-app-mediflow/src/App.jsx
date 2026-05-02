@@ -11,6 +11,8 @@ import NotFound from "./pages/NotFound";
 import Professionals from "./pages/Professionals";
 import AdminCreateProfessional from "./pages/AdminCreateProfessional";
 import AdminCreateSpecialty from "./pages/AdminCreateSpecialty";
+import ProfessionalAppointments from "./pages/ProfessionalAppointments";
+import ProfessionalCreateAppointment from "./pages/ProfessionalCreateAppointment";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
         <Route path="/professionals" element={<Professionals />} />
         <Route path="/admin/profesionales/crear" element={<AdminCreateProfessional />} />
         <Route path="/admin/especialidades/crear" element={<AdminCreateSpecialty />} />
+        <Route path="/profesional/citas" element={<ProfessionalAppointments />} />
+        <Route path="/profesional/agendar" element={<ProfessionalCreateAppointment />}/>
 
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -2,6 +2,8 @@ package com.example.MediFlow.service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +31,9 @@ public class ProfesionalSaludService {
         Long especialidadId = Long.valueOf(request.get("especialidadId").toString());
 
         String numeroRegistro = request.get("numeroRegistro").toString();
-        String horarioAtencion = request.get("horarioAtencion").toString();
+
+        LocalTime horaInicio = LocalTime.parse(request.get("horaInicio").toString());
+        LocalTime horaFin = LocalTime.parse(request.get("horaFin").toString());
 
         if (usuarioRepository.existsByCorreo(correo)) {
                 throw new RuntimeException("Ya existe un usuario con ese correo");
@@ -43,7 +47,7 @@ public class ProfesionalSaludService {
                 .apellidos(apellidos)
                 .correo(correo)
                 .password(password)
-                .rol(Rol.PROFESIONAL) // 🔥 clave
+                .rol(Rol.PROFESIONAL)
                 .activo(true)
                 .build();
 
@@ -53,10 +57,21 @@ public class ProfesionalSaludService {
                 .usuario(usuario)
                 .especialidad(especialidad)
                 .numeroRegistro(numeroRegistro)
-                .horarioAtencion(horarioAtencion)
+                .horaInicio(horaInicio)
+                .horaFin(horaFin)
                 .disponible(true)
                 .build();
 
         return profesionalRepository.save(profesional);
         }
+
+        public List<ProfesionalSalud> listar() {
+             return profesionalRepository.findAll();
+        }
+
+        public List<ProfesionalSalud> listarPorEspecialidad(Long especialidadId) {
+             return profesionalRepository.findByEspecialidad_Id(especialidadId);
+        }
+
+        
 }

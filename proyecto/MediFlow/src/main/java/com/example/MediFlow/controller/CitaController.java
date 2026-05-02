@@ -28,6 +28,7 @@ public class CitaController {
         try {
             Long usuarioId = Long.valueOf(request.get("usuarioId").toString());
             Long especialidadId = Long.valueOf(request.get("especialidadId").toString());
+            Long profesionalId = Long.valueOf(request.get("profesionalId").toString());
 
             LocalDate fecha = LocalDate.parse(request.get("fecha").toString());
             LocalTime hora = LocalTime.parse(request.get("hora").toString());
@@ -41,12 +42,13 @@ public class CitaController {
                     : null;
 
             Cita cita = citaService.crear(
-                    usuarioId,
-                    especialidadId,
-                    fecha,
-                    hora,
-                    motivo,
-                    observaciones
+                usuarioId,
+                especialidadId,
+                profesionalId,
+                fecha,
+                hora,
+                motivo,
+                observaciones
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(cita);
@@ -66,4 +68,24 @@ public class CitaController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/profesional/usuario/{usuarioId}")
+    public ResponseEntity<?> obtenerPorProfesional(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(citaService.obtenerPorProfesionalUsuario(usuarioId));
+    }
+
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<?> cambiarEstado(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> request
+    ) {
+        try {
+            String estado = request.get("estado").toString();
+            Cita cita = citaService.cambiarEstado(id, estado);
+            return ResponseEntity.ok(cita);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
 }

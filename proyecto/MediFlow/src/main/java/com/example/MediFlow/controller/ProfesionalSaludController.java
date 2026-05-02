@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.MediFlow.model.ProfesionalSalud;
 import com.example.MediFlow.service.ProfesionalSaludService;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -38,4 +39,16 @@ public class ProfesionalSaludController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping
+    public List<ProfesionalSalud> listar() {
+        return profesionalSaludService.listar();
+    }
+
+    @GetMapping("/especialidad/{especialidadId}")
+    public ResponseEntity<?> listarPorEspecialidad(@PathVariable Long especialidadId) {
+        return ResponseEntity.ok(profesionalSaludService.listarPorEspecialidad(especialidadId));
+    }
+
+    
 }

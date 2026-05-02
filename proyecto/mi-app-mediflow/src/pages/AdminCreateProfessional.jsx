@@ -14,7 +14,8 @@ export default function AdminCreateProfessional() {
         password: "",
         especialidadId: "",
         numeroRegistro: "",
-        horarioAtencion: ""
+        horaInicio: "",
+        horaFin: ""
     });
 
     if (!user || user.rol !== "ADMIN") {
@@ -95,7 +96,8 @@ export default function AdminCreateProfessional() {
             </select>
 
             <input name="numeroRegistro" placeholder="Número de registro" value={form.numeroRegistro} onChange={handleChange} />
-            <input name="horarioAtencion" placeholder="Horario atención, ej: 08:00-18:00" value={form.horarioAtencion} onChange={handleChange} />
+            <input type="time" name="horaInicio" value={form.horaInicio} onChange={handleChange} required/>
+            <input type="time" name="horaFin" value={form.horaFin} onChange={handleChange} required/>
 
             <button type="submit">Crear profesional</button>
             </form>
