@@ -7,38 +7,60 @@ export default function Patients() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/usuarios/rol/PACIENTE", {
-      headers: {
-        rol: user.rol
+    if (!user) return;
+
+    //PROFESIONAL: sus pacientes; ADMIN: todos
+    const url = user.rol === "PROFESIONAL"
+      ? `http://localhost:8080/api/citas/pacientes/profesional/${user.id}`
+      : `http://localhost:8080/api/usuarios/rol/PACIENTE`;
+
+    fetch(url, {
+      headers: { 
+        rol: user.rol 
       }
     })
       .then(res => res.json())
-      .then(data => {
-        console.log("Pacientes:", data);
-        setPatients(data);
-      })
+      .then(data => setPatients(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
   }, []);
 
-
   if (!user || (user.rol !== "PROFESIONAL" && user.rol !== "ADMIN")) {
-  return <p>No tienes acceso a esta página</p>;
+    return <p>No tienes acceso a esta página.</p>;
   }
 
   return (
     <>
-      <Header />
+          <Header />
 
       <div style={{ padding: "20px" }}>
-        <h2>Pacientes</h2>
+        <h2>
+          {user.rol === "PROFESIONAL" ? "Mis pacientes" : "Pacientes del sistema"}
+        </h2>
 
-        <ul>
-          {patients.map(p => (
-            <li key={p.id}>
-              {p.nombres} {p.apellidos}
-            </li>
-          ))}
-        </ul>
+        {patients.length === 0 ? (
+          <p>No hay pacientes para mostrar.</p>
+        ) : (
+          <table border="1" cellPadding="10">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+              </tr>
+            </thead>
+            <tbody>
+              {patients.map(p => (
+                <tr key={p.id}>
+                  <td>{p.nombres}</td>
+                  <td>{p.apellidos}</td>
+                  <td>{p.correo}</td>
+                  <td>{p.telefono || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <Footer />
