@@ -54,29 +54,7 @@ export default function Home() {
 
           {user?.rol === "ADMIN" && (
             <>
-              <div className="card">
-                <h3>Crear profesional</h3>
-                <p>Agregar profesionales al sistema</p>
-                <Link to="/admin/profesionales/crear">Crear profesional</Link>
-              </div>
 
-              <div className="card">
-                <h3>Crear especialidad</h3>
-                <p>Agregar especialidades médicas</p>
-                <Link to="/admin/especialidades/crear">Crear especialidad</Link>
-              </div>
-
-              <div className="card">
-                <h3>Pacientes</h3>
-                <p>Listado de pacientes</p>
-                <Link to="/patients">Ver pacientes</Link>
-              </div>
-
-              <div className="card">
-                <h3>Profesionales</h3>
-                <p>Listado de profesionales</p>
-                <Link to="/professionals">Ver profesionales</Link>
-              </div>
             </>
           )}
         </div>

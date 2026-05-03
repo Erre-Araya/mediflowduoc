@@ -237,3 +237,48 @@
 .paciente-item:hover {
   background: rgba(56, 189, 248, 0.15);
 }
+
+.paciente-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 100;
+  margin-top: 4px;
+}
+
+.paciente-dropdown-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s;
+}
+
+.paciente-dropdown-item:hover {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.paciente-nombre {
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.paciente-correo {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.paciente-dropdown-vacio {
+  padding: 12px 14px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}

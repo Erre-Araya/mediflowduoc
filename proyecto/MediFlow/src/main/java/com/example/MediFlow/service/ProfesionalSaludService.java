@@ -26,7 +26,10 @@ public class ProfesionalSaludService {
         String nombres = request.get("nombres").toString();
         String apellidos = request.get("apellidos").toString();
         String correo = request.get("correo").toString();
-        String password = request.get("password").toString();
+
+        String password = (request.get("password") != null && !request.get("password").toString().isEmpty())
+        ? request.get("password").toString()
+        : "1234";
 
         Long especialidadId = Long.valueOf(request.get("especialidadId").toString());
 

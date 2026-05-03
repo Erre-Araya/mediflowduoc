@@ -29,9 +29,8 @@ export default function Header() {
 
         {user?.rol === "ADMIN" && (
           <>
-            <Link to="/admin/profesionales/crear">Crear profesional</Link>
-            <Link to="/admin/especialidades/crear">Crear especialidad</Link>
-            <Link to="/create-patient">Crear paciente</Link>
+            <Link to="/professionals">Profesionales</Link>
+            <Link to="/patients">Pacientes</Link>
           </>
         )}
       </nav>

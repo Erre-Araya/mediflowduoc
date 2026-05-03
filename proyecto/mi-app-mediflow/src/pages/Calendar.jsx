@@ -3,15 +3,15 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styles/Calendar.css";
 
+// Convierte "HH:MM" a minutos para poder comparar horas correctamente
 function horaAMinutos(hora) {
   const [h, m] = hora.split(":").map(Number);
   return h * 60 + m;
 }
 
-//Genera bloques de 30 min entre horaInicio y horaFin
+// Genera bloques de 30 minutos entre horaInicio y horaFin
 function generarBloques(inicio, fin) {
   const bloques = [];
-
   if (!inicio || !fin) return bloques;
 
   const [hI, mI] = inicio.split(":").map(Number);
@@ -30,6 +30,7 @@ function generarBloques(inicio, fin) {
   return bloques;
 }
 
+// Formatea la fecha para mostrarla al usuario en español
 function formatearFecha(fecha) {
   return fecha.toLocaleDateString("es-CL", {
     weekday: "long",
@@ -39,35 +40,50 @@ function formatearFecha(fecha) {
   });
 }
 
+// Convierte un objeto Date a string "YYYY-MM-DD" para el backend
 function fechaParaAPI(fecha) {
   return fecha.toISOString().split("T")[0];
 }
 
-export default function Calendar({ mode }) {
+export default function Calendar() {
   const user = JSON.parse(localStorage.getItem("user"));
-  const isAdmin = user?.rol === "ADMIN";
 
+  // Estados del calendario
   const [fechaActual, setFechaActual] = useState(new Date());
   const [profesionales, setProfesionales] = useState([]);
   const [especialidades, setEspecialidades] = useState([]);
   const [especialidadFiltro, setEspecialidadFiltro] = useState("");
   const [citasDelDia, setCitasDelDia] = useState([]);
-  const [pacientes, setPacientes] = useState([]);
 
+  // Estados para el formulario del modal
+  const [pacientes, setPacientes] = useState([]);
+  const [regiones, setRegiones] = useState([]);
+  const [comunas, setComunas] = useState([]);
+
+  // Estados del modal
   const [modalAbierto, setModalAbierto] = useState(false);
   const [bloqueSeleccionado, setBloqueSeleccionado] = useState(null);
 
+  // Estados del buscador de pacientes
+  const [busqueda, setBusqueda] = useState("");
+  const [mostrarLista, setMostrarLista] = useState(false);
+
+  // Estado del formulario dentro del modal
   const [form, setForm] = useState({
     pacienteId: "",
     motivo: "",
     crearPaciente: false,
+    run: "",
     nombreNuevo: "",
     apellidoNuevo: "",
     correoNuevo: "",
-    busquedaPaciente: ""
+    telefonoNuevo: "",
+    regionId: "",
+    comunaId: "",
+    direccion: ""
   });
 
-  //Carga inicial
+  // Carga inicial: profesionales, especialidades, pacientes y regiones
   useEffect(() => {
     fetch("http://localhost:8080/api/profesionales")
       .then(res => res.json())
@@ -82,88 +98,155 @@ export default function Calendar({ mode }) {
     })
       .then(res => res.json())
       .then(data => setPacientes(Array.isArray(data) ? data : []));
+
+    fetch("http://localhost:8080/api/regiones")
+      .then(res => res.json())
+      .then(data => setRegiones(Array.isArray(data) ? data : []));
   }, []);
 
-  //✅ SOLO UN useEffect (CORRECTO)
+  // Carga comunas cuando el usuario selecciona una región en el formulario
+  useEffect(() => {
+    if (form.regionId) {
+      fetch(`http://localhost:8080/api/comunas/region/${form.regionId}`)
+        .then(res => res.json())
+        .then(data => setComunas(Array.isArray(data) ? data : []));
+    } else {
+      setComunas([]);
+    }
+  }, [form.regionId]);
+
+  // Carga las citas del día — se vuelve a ejecutar cada vez que cambia la fecha
   useEffect(() => {
     let url = "";
 
-    if (user?.rol === "PROFESIONAL") {
-      url = `http://localhost:8080/api/citas/profesional/usuario/${user.id}`;
-    } else if (user?.rol === "ADMIN") {
+    if (user?.rol === "ADMIN") {
       url = `http://localhost:8080/api/citas/fecha/${fechaParaAPI(fechaActual)}`;
-    } else {
-      url = `http://localhost:8080/api/citas/usuario/${user.id}`;
+    } else if (user?.rol === "PROFESIONAL") {
+      url = `http://localhost:8080/api/citas/profesional/usuario/${user.id}`;
     }
+
+    if (!url) return;
 
     fetch(url)
       .then(res => res.json())
-      .then(data => setCitasDelDia(Array.isArray(data) ? data : []))
-      .catch(err => console.error(err));
+      .then(data => {
+        const todas = Array.isArray(data) ? data : [];
 
+        // Para el profesional el backend devuelve todas sus citas,
+        // por eso filtramos por fecha aquí en el frontend
+        const filtradas =
+          user?.rol === "PROFESIONAL"
+            ? todas.filter(c => c.fecha === fechaParaAPI(fechaActual))
+            : todas;
+
+        setCitasDelDia(filtradas);
+      })
+      .catch(err => console.error("Error cargando citas:", err));
   }, [fechaActual]);
 
+  // Filtra los profesionales según el rol y la especialidad seleccionada
   const profesionalesFiltrados =
     user?.rol === "ADMIN"
       ? especialidadFiltro
-        ? profesionales.filter(p => String(p.especialidad?.id) === especialidadFiltro)
+        ? profesionales.filter(
+            p => String(p.especialidad?.id) === String(especialidadFiltro)
+          )
         : profesionales
-      : profesionales.filter(p => p.usuario?.id === user?.id);
+      : profesionales.filter(
+          p => Number(p.usuario?.id) === Number(user?.id)
+        );
 
-  const todosLosBloques = [...new Set(
-    profesionalesFiltrados.flatMap(p =>
-      generarBloques(p.horaInicio || "08:00", p.horaFin || "18:00")
+  // Genera todos los bloques horarios del día combinando los horarios de todos los profesionales visibles
+  const todosLosBloques = [
+    ...new Set(
+      profesionalesFiltrados.flatMap(p =>
+        generarBloques(p.horaInicio || "08:00", p.horaFin || "18:00")
+      )
     )
-  )].sort();
+  ].sort();
 
+  // Usa Number() para evitar el bug de comparación entre Java long y JS
   const estaOcupado = (profesionalId, hora) => {
     return citasDelDia.some(
       c =>
-        c.profesional?.id === profesionalId &&
-        c.hora?.startsWith(hora) &&
-        c.fecha === fechaParaAPI(fechaActual)
+        Number(c.profesional?.id) === Number(profesionalId) &&
+        c.hora?.startsWith(hora)
     );
   };
 
   const getCita = (profesionalId, hora) => {
     return citasDelDia.find(
       c =>
-        c.profesional?.id === profesionalId &&
-        c.hora?.startsWith(hora) &&
-        c.fecha === fechaParaAPI(fechaActual)
+        Number(c.profesional?.id) === Number(profesionalId) &&
+        c.hora?.startsWith(hora)
     );
   };
 
-  const handleBloqueClick = (profesional, hora) => {
-    if (estaOcupado(profesional.id, hora)) return;
-
-    setBloqueSeleccionado({ profesional, hora });
+  // Cierra el modal y limpia todos los estados relacionados
+  const cerrarModal = () => {
+    setModalAbierto(false);
+    setBusqueda("");
+    setMostrarLista(false);
+    setBloqueSeleccionado(null);
     setForm({
       pacienteId: "",
       motivo: "",
       crearPaciente: false,
+      run: "",
       nombreNuevo: "",
       apellidoNuevo: "",
       correoNuevo: "",
-      busquedaPaciente: ""
+      telefonoNuevo: "",
+      regionId: "",
+      comunaId: "",
+      direccion: ""
+    });
+  };
+
+  // Se ejecuta al hacer clic en un bloque libre del calendario
+  const handleBloqueClick = (profesional, hora) => {
+    if (estaOcupado(profesional.id, hora)) return;
+
+    setBloqueSeleccionado({ profesional, hora });
+    setBusqueda("");
+    setMostrarLista(false);
+    setForm({
+      pacienteId: "",
+      motivo: "",
+      crearPaciente: false,
+      run: "",
+      nombreNuevo: "",
+      apellidoNuevo: "",
+      correoNuevo: "",
+      telefonoNuevo: "",
+      regionId: "",
+      comunaId: "",
+      direccion: ""
     });
     setModalAbierto(true);
   };
 
+  // Guarda la cita al enviar el formulario del modal
   const handleGuardar = async (e) => {
     e.preventDefault();
 
     try {
       let pacienteId = form.pacienteId;
 
+      // Si marcó "crear paciente nuevo", primero lo registra
       if (form.crearPaciente) {
         const res = await fetch("http://localhost:8080/api/usuarios", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            run: form.run || null,
             nombres: form.nombreNuevo,
             apellidos: form.apellidoNuevo,
             correo: form.correoNuevo,
+            telefono: form.telefonoNuevo || null,
+            regionId: form.regionId || null,
+            comunaId: form.comunaId || null,
+            direccion: form.direccion || null,
             password: "1234",
             rol: "PACIENTE"
           })
@@ -176,6 +259,11 @@ export default function Calendar({ mode }) {
         setPacientes(prev => [...prev, nuevo]);
       }
 
+      if (!pacienteId) {
+        throw new Error("Debes seleccionar o crear un paciente");
+      }
+
+      // Crea la cita con los datos del bloque seleccionado
       const res = await fetch("http://localhost:8080/api/citas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -193,8 +281,9 @@ export default function Calendar({ mode }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al crear cita");
 
+      // Actualiza el calendario en pantalla sin recargar la página
       setCitasDelDia(prev => [...prev, data]);
-      setModalAbierto(false);
+      cerrarModal();
 
     } catch (err) {
       alert(err.message);
@@ -205,6 +294,7 @@ export default function Calendar({ mode }) {
     <>
       <div className="page-container">
 
+        {/* Barra superior: navegación de fecha y filtro por especialidad */}
         <div className="calendar-toolbar">
           <div className="calendar-nav">
             <button
@@ -247,6 +337,7 @@ export default function Calendar({ mode }) {
           </select>
         </div>
 
+        {/* Tabla del calendario */}
         <div className="table-container">
           <table className="calendar-table">
             <thead>
@@ -264,10 +355,12 @@ export default function Calendar({ mode }) {
                 ))}
               </tr>
             </thead>
+
             <tbody>
               {todosLosBloques.map(hora => (
                 <tr key={hora}>
                   <td className="calendar-hora">{hora}</td>
+
                   {profesionalesFiltrados.map(p => {
                     const ocupado = estaOcupado(p.id, hora);
                     const cita = getCita(p.id, hora);
@@ -276,25 +369,34 @@ export default function Calendar({ mode }) {
                       horaAMinutos(hora) >= horaAMinutos(p.horaFin || "18:00");
 
                     if (fueraHorario) {
-                      return <td key={`${p.id}-${hora}`} className="calendar-bloque-fuera" />;
+                      return (
+                        <td
+                          key={`fuera-${p.id}-${hora}`}
+                          className="calendar-bloque-fuera"
+                        />
+                      );
                     }
 
                     return (
                       <td
-                        key={p.id}
+                        key={`bloque-${p.id}-${hora}`}
                         className={`calendar-bloque ${ocupado ? "ocupado" : "libre"}`}
                         onClick={ocupado ? undefined : () => handleBloqueClick(p, hora)}
                         style={{ cursor: ocupado ? "not-allowed" : "pointer" }}
-                        title={ocupado
-                          ? `${cita?.usuario?.nombres} ${cita?.usuario?.apellidos} — ${cita?.estadoCita}`
-                          : "Disponible — clic para agendar"}
+                        title={
+                          ocupado
+                            ? `${cita?.usuario?.nombres} ${cita?.usuario?.apellidos} — ${cita?.estadoCita}`
+                            : "Disponible — clic para agendar"
+                        }
                       >
                         {ocupado && (
                           <div className="calendar-cita-info">
                             <span className="calendar-cita-nombre">
                               {cita?.usuario?.nombres}
                             </span>
-                            <span className={`calendar-badge ${cita?.estadoCita?.toLowerCase()}`}>
+                            <span
+                              className={`calendar-badge ${cita?.estadoCita?.toLowerCase()}`}
+                            >
                               {cita?.estadoCita}
                             </span>
                           </div>
@@ -309,85 +411,174 @@ export default function Calendar({ mode }) {
         </div>
       </div>
 
-      {/* MODAL */}
-      {modalAbierto && (
-        <div className="modal-overlay" onClick={() => setModalAbierto(false)}>
+      {/* Modal para agendar — solo se renderiza cuando modalAbierto es true */}
+      {modalAbierto && bloqueSeleccionado && (
+        <div className="modal-overlay" onClick={cerrarModal}>
           <div className="modal-card" onClick={e => e.stopPropagation()}>
+
             <h3 className="modal-title">Nueva cita</h3>
 
             <p className="modal-info">
               <strong>
-                {bloqueSeleccionado?.profesional?.usuario?.nombres} {bloqueSeleccionado?.profesional?.usuario?.apellidos}
+                {bloqueSeleccionado.profesional.usuario?.nombres}{" "}
+                {bloqueSeleccionado.profesional.usuario?.apellidos}
               </strong>
-              {" — "}{bloqueSeleccionado?.hora} — {formatearFecha(fechaActual)}
+              {" — "}
+              {bloqueSeleccionado.hora}
+              {" — "}
+              {formatearFecha(fechaActual)}
             </p>
 
             <form className="form" onSubmit={handleGuardar}>
 
-              <div className="form-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={form.crearPaciente}
-                    onChange={e => setForm({ ...form, crearPaciente: e.target.checked })}
-                    style={{ marginRight: "8px" }}
-                  />
-                  Crear paciente nuevo
-                </label>
-              </div>
+              {/* Toggle: buscar paciente existente o crear uno nuevo */}
+              <label style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "14px",
+                cursor: "pointer",
+                color: "var(--color-text-muted)"
+              }}>
+                <input
+                  type="checkbox"
+                  checked={form.crearPaciente}
+                  onChange={e => {
+                    setForm({ ...form, crearPaciente: e.target.checked, pacienteId: "" });
+                    setBusqueda("");
+                    setMostrarLista(false);
+                  }}
+                />
+                Crear paciente nuevo
+              </label>
 
               {form.crearPaciente ? (
-                <>
-                  <input className="input" placeholder="Nombres"
-                    value={form.nombreNuevo}
-                    onChange={e => setForm({ ...form, nombreNuevo: e.target.value })}
-                    required />
-
-                  <input className="input" placeholder="Apellidos"
-                    value={form.apellidoNuevo}
-                    onChange={e => setForm({ ...form, apellidoNuevo: e.target.value })}
-                    required />
-
-                  <input className="input" type="email" placeholder="Correo"
-                    value={form.correoNuevo}
-                    onChange={e => setForm({ ...form, correoNuevo: e.target.value })}
-                    required />
-                </>
-              ) : (
+                /* Formulario completo para registrar paciente nuevo */
                 <>
                   <input
                     className="input"
-                    placeholder="Buscar paciente..."
-                    value={form.busquedaPaciente}
-                    onChange={e => setForm({ ...form, busquedaPaciente: e.target.value })}
+                    placeholder="RUN (sin puntos ni guión)"
+                    value={form.run}
+                    onChange={e => setForm({ ...form, run: e.target.value })}
+                  />
+                  <input
+                    className="input"
+                    placeholder="Nombres *"
+                    value={form.nombreNuevo}
+                    onChange={e => setForm({ ...form, nombreNuevo: e.target.value })}
+                    required
+                  />
+                  <input
+                    className="input"
+                    placeholder="Apellidos *"
+                    value={form.apellidoNuevo}
+                    onChange={e => setForm({ ...form, apellidoNuevo: e.target.value })}
+                    required
+                  />
+                  <input
+                    className="input"
+                    type="email"
+                    placeholder="Correo electrónico *"
+                    value={form.correoNuevo}
+                    onChange={e => setForm({ ...form, correoNuevo: e.target.value })}
+                    required
+                  />
+                  <input
+                    className="input"
+                    placeholder="Teléfono"
+                    value={form.telefonoNuevo}
+                    onChange={e => setForm({ ...form, telefonoNuevo: e.target.value })}
+                  />
+                  <select
+                    className="input"
+                    value={form.regionId}
+                    onChange={e =>
+                      setForm({ ...form, regionId: e.target.value, comunaId: "" })
+                    }
+                  >
+                    <option value="">Selecciona región</option>
+                    {regiones.map(r => (
+                      <option key={r.id} value={r.id}>{r.nombre}</option>
+                    ))}
+                  </select>
+                  <select
+                    className="input"
+                    value={form.comunaId}
+                    onChange={e => setForm({ ...form, comunaId: e.target.value })}
+                    disabled={!form.regionId}
+                  >
+                    <option value="">Selecciona comuna</option>
+                    {comunas.map(c => (
+                      <option key={c.id} value={c.id}>{c.nombre}</option>
+                    ))}
+                  </select>
+                  <input
+                    className="input"
+                    placeholder="Dirección"
+                    value={form.direccion}
+                    onChange={e => setForm({ ...form, direccion: e.target.value })}
+                  />
+                  <p style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
+                    Contraseña temporal: <strong>1234</strong>
+                  </p>
+                </>
+              ) : (
+                /* Buscador de paciente existente con dropdown */
+                <div style={{ position: "relative" }}>
+                  <input
+                    className="input"
+                    placeholder="Buscar paciente por nombre..."
+                    value={busqueda}
+                    autoComplete="off"
+                    onChange={e => {
+                      setBusqueda(e.target.value);
+                      setMostrarLista(true);
+                      setForm({ ...form, pacienteId: "" });
+                    }}
+                    onFocus={() => setMostrarLista(true)}
                   />
 
-                  <div className="paciente-lista">
-                    {pacientes
-                      .filter(p =>
-                        `${p.nombres} ${p.apellidos}`.toLowerCase()
-                          .includes(form.busquedaPaciente.toLowerCase())
-                      )
-                      .slice(0, 8)
-                      .map(p => (
-                        <div
-                          key={p.id}
-                          className="paciente-item"
-                          onClick={() =>
-                            setForm({
-                              ...form,
-                              pacienteId: p.id,
-                              busquedaPaciente: `${p.nombres} ${p.apellidos}`
-                            })
-                          }
-                        >
-                          {p.nombres} {p.apellidos}
+                  {mostrarLista && busqueda.length > 0 && (
+                    <div className="paciente-dropdown">
+                      {pacientes
+                        .filter(p =>
+                          `${p.nombres} ${p.apellidos}`
+                            .toLowerCase()
+                            .includes(busqueda.toLowerCase())
+                        )
+                        .slice(0, 6)
+                        .map(p => (
+                          <div
+                            key={p.id}
+                            className="paciente-dropdown-item"
+                            onClick={() => {
+                              setForm({ ...form, pacienteId: p.id });
+                              setBusqueda(`${p.nombres} ${p.apellidos}`);
+                              setMostrarLista(false);
+                            }}
+                          >
+                            <span className="paciente-nombre">
+                              {p.nombres} {p.apellidos}
+                            </span>
+                            <span className="paciente-correo">{p.correo}</span>
+                          </div>
+                        ))}
+
+                      {pacientes.filter(p =>
+                        `${p.nombres} ${p.apellidos}`
+                          .toLowerCase()
+                          .includes(busqueda.toLowerCase())
+                      ).length === 0 && (
+                        <div className="paciente-dropdown-vacio">
+                          No se encontraron pacientes
                         </div>
-                      ))}
-                  </div>
-                </>
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
 
+              {/* Motivo de consulta */}
               <input
                 className="input"
                 placeholder="Motivo (opcional)"
@@ -395,12 +586,17 @@ export default function Calendar({ mode }) {
                 onChange={e => setForm({ ...form, motivo: e.target.value })}
               />
 
+              {/* Botones de acción */}
               <div style={{ display: "flex", gap: "10px" }}>
                 <button type="submit" className="btn btn-primary">
                   Guardar cita
                 </button>
-                <button type="button" className="btn btn-danger"
-                  onClick={() => setModalAbierto(false)}>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  style={{ width: "auto" }}
+                  onClick={cerrarModal}
+                >
                   Cancelar
                 </button>
               </div>
