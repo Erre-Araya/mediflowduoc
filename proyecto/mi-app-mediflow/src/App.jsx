@@ -35,7 +35,7 @@ function App() {
         <Route path="/profesional/citas" element={<ProfessionalAppointments />} />
         <Route path="/profesional/agendar" element={<ProfessionalCreateAppointment />} />
         <Route path="/create-patient" element={<CreatePatient />} />
-        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/calendar" element={<Home />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

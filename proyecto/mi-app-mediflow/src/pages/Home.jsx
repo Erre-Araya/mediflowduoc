@@ -1,6 +1,7 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import Calendar from "./Calendar";
 
 export default function Home() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -70,16 +71,17 @@ export default function Home() {
                 <p>Listado de pacientes</p>
                 <Link to="/patients">Ver pacientes</Link>
               </div>
+
+              <div className="card">
+                <h3>Profesionales</h3>
+                <p>Listado de profesionales</p>
+                <Link to="/professionals">Ver profesionales</Link>
+              </div>
             </>
           )}
-
-          <div className="card">
-            <h3>Profesionales</h3>
-            <p>Listado de profesionales</p>
-            <Link to="/professionals">Ver profesionales</Link>
-          </div>
-
         </div>
+
+      <Calendar embedded={true} />
       </div>
 
       <Footer />

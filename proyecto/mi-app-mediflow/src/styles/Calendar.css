@@ -24,6 +24,8 @@
   justify-content: center;
   border-radius: 8px;
   font-size: 18px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .calendar-nav .btn:hover {
@@ -40,8 +42,13 @@
   text-align: center;
 }
 
+/* ========================= */
+/* TABLA */
+/* ========================= */
+
 .calendar-table {
   border-collapse: collapse;
+  width: 100%;
   min-width: 100%;
 }
 
@@ -60,6 +67,10 @@
   text-align: left !important;
 }
 
+/* ========================= */
+/* PROFESIONALES */
+/* ========================= */
+
 .calendar-profesional-nombre {
   font-weight: 600;
   color: var(--color-text);
@@ -72,6 +83,10 @@
   margin-top: 2px;
 }
 
+/* ========================= */
+/* HORAS */
+/* ========================= */
+
 .calendar-hora {
   color: var(--color-text-muted);
   font-size: 13px;
@@ -81,38 +96,46 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* ========================= */
+/* BLOQUES */
+/* ========================= */
+
 .calendar-bloque {
   padding: 6px 10px;
   border-bottom: 1px solid var(--color-border);
   border-left: 1px solid var(--color-border);
   height: 52px;
   vertical-align: middle;
-  transition: background 0.15s;
+  transition: all 0.15s ease;
 }
 
+/* libre (clickeable) */
 .calendar-bloque.libre {
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .calendar-bloque.libre:hover {
-  background: rgba(56, 189, 248, 0.08);
+  background: rgba(56, 189, 248, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.4);
 }
 
+/* ocupado */
 .calendar-bloque.ocupado {
   background: rgba(56, 189, 248, 0.06);
-  cursor: default;
+  cursor: not-allowed;
 }
 
+/* fuera de horario */
 .calendar-bloque-fuera {
   background: rgba(0,0,0,0.15);
   border-bottom: 1px solid var(--color-border);
   border-left: 1px solid var(--color-border);
 }
 
-.calendar-libre-text {
-  color: var(--color-text-muted);
-  font-size: 12px;
-}
+/* ========================= */
+/* CITA INFO */
+/* ========================= */
 
 .calendar-cita-info {
   display: flex;
@@ -126,13 +149,17 @@
   color: var(--color-text);
 }
 
+/* ========================= */
+/* BADGES */
+/* ========================= */
+
 .calendar-badge {
   font-size: 10px;
   padding: 2px 6px;
   border-radius: 4px;
-  display: inline-block;
   font-weight: 600;
   width: fit-content;
+  display: inline-block;
 }
 
 .calendar-badge.pendiente {
@@ -155,7 +182,9 @@
   color: #94a3b8;
 }
 
-/* Modal */
+/* ========================= */
+/* MODAL */
+/* ========================= */
 
 .modal-overlay {
   position: fixed;
@@ -188,4 +217,23 @@
   color: var(--color-text-muted);
   font-size: 14px;
   margin-bottom: 20px;
+}
+
+.paciente-lista {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-top: 6px;
+  background: var(--bg-card);
+}
+
+.paciente-item {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.paciente-item:hover {
+  background: rgba(56, 189, 248, 0.15);
 }
