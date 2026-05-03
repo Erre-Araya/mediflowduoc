@@ -7,44 +7,65 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
+    e.preventDefault();
+    setError("");
     try {
-      const user = await loginUser(correo, password);
-
-      if (!user || user.error) {
-        alert(user.error || "Credenciales incorrectas");
-        return;
-      }
-
-      localStorage.setItem("user", JSON.stringify(user));
-      navigate("/home");
-
+    const user = await loginUser(correo, password);
+    if (!user || user.error) {
+      setError(user.error || "Credenciales incorrectas");
+      return;
+    }
+    localStorage.setItem("user", JSON.stringify(user));
+    navigate("/home");
     } catch (err) {
-      alert(err.error || "Credenciales incorrectas");
+      setError("Credenciales incorrectas");
     }
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Iniciar sesión</h2>
+    <div className="page-container" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div className="card" style={{ width: "320px" }}>
+        
+        <h2 className="page-title" style={{ textAlign: "center" }}>
+          Iniciar sesión
+        </h2>
 
-        <input type="email" placeholder="Correo" value={correo} onChange={(e) => setCorreo(e.target.value)} required/>
+        {error && <p className="msg-error">{error}</p>}
 
-        <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)}required/>
+        <form className="form" onSubmit={handleSubmit}>
+          <input
+            className="input"
+            type="email"
+            placeholder="Correo"
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+            required
+          />
 
-        <button type="submit">Ingresar</button>
+          <input
+            className="input"
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-        <p>
-          ¿Aun no tienes cuenta?{" "}
-          <Link to="/register">Regístrate</Link>
-        </p>
-      </form>
+          <button className="btn btn-primary" type="submit">
+            Ingresar
+          </button>
+
+          <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
+            ¿Aún no tienes cuenta? <Link to="/register">Regístrate</Link>
+          </p>
+        </form>
+
+      </div>
     </div>
   );
 }

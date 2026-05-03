@@ -70,59 +70,45 @@ export default function Register() {
     <>
       <Header />
 
-      <div className="register">
+      <div className="page-container" style={{ display: "flex", justifyContent: "center" }}>
+      
+      <div className="card" style={{ width: "420px" }}>
+        
+        <h2 className="page-title">Registro</h2>
+
         <form onSubmit={handleSubmit} className="form">
-          <h2 className="h2">Registro</h2>
 
-        <input name="run" placeholder="Run" onChange={handleChange}/>
-        <input name="nombres" placeholder="Nombres" onChange={handleChange} />
-        <input name="apellidos" placeholder="Apellidos" onChange={handleChange} />
-        <input name="correo" placeholder="Correo" onChange={handleChange} />
-        <input name="password" type="password" placeholder="Contraseña" onChange={handleChange} />
-        <div>
-          <div >
-            <label >Region</label>
-            <select
-              name="regionId"
-              value={form.regionId}
-              onChange={handleChange}
-              disabled={loadingRegiones}
-            >
-              <option value="">
-                {loadingRegiones ? 'Cargando...' : 'Selecciona region'}
-              </option>
-              {Array.isArray(regiones) && regiones.map((region) => (
-                <option key={region.id} value={region.id}>
-                  {region.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label>Comuna</label>
-            <select
-              name="comunaId"
-              value={form.comunaId}
-              onChange={handleChange}
-              disabled={!form.regionId || comunas.length === 0}
-            >
-              <option value="">Selecciona comuna</option>
-              {comunas.map((comuna) => (
-                <option key={comuna.id} value={comuna.id}>
-                  {comuna.nombre}
-                </option>
-              ))}
-              </select>
-            </div>
-          </div>
+          <input className="input" name="run" placeholder="Run" onChange={handleChange}/>
+          <input className="input" name="nombres" placeholder="Nombres" onChange={handleChange}/>
+          <input className="input" name="apellidos" placeholder="Apellidos" onChange={handleChange}/>
+          <input className="input" name="correo" placeholder="Correo" onChange={handleChange}/>
+          <input className="input" name="password" type="password" placeholder="Contraseña" onChange={handleChange}/>
 
-        <input name="direccion" placeholder="direccion" onChange={handleChange}/>
-        <input name="telefono" placeholder="Telefono" onChange={handleChange}/>
+          <select className="input" name="regionId" onChange={handleChange}>
+            <option>Selecciona región</option>
+            {regiones.map(r => (
+              <option key={r.id} value={r.id}>{r.nombre}</option>
+            ))}
+          </select>
 
+          <select className="input" name="comunaId" onChange={handleChange}>
+            <option>Selecciona comuna</option>
+            {comunas.map(c => (
+              <option key={c.id} value={c.id}>{c.nombre}</option>
+            ))}
+          </select>
 
-          <button type="submit" className="button">Registrarse</button>
+          <input className="input" name="direccion" placeholder="Dirección" onChange={handleChange}/>
+          <input className="input" name="telefono" placeholder="Teléfono" onChange={handleChange}/>
+
+          <button className="btn btn-primary" type="submit">
+            Registrarse
+          </button>
+
         </form>
+
       </div>
+    </div>
 
       <Footer />
     </>

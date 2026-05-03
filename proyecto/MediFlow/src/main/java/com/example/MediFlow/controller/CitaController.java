@@ -95,5 +95,15 @@ public class CitaController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
-    }  
+    }
+
+    @GetMapping("/fecha/{fecha}")
+    public ResponseEntity<?> obtenerPorFecha(@PathVariable String fecha) {
+        try {
+            LocalDate localDate = LocalDate.parse(fecha);
+            return ResponseEntity.ok(citaService.obtenerPorFecha(localDate));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

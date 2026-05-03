@@ -122,115 +122,122 @@ export default function ProfessionalCreateAppointment() {
     <>
       <Header />
 
-      <div style={{ padding: "20px" }}>
-        <h2>Agendar cita para paciente</h2>
+      <div className="page-container" style={{ display: "flex", justifyContent: "center" }}>
 
-        <form onSubmit={handleSubmit}>
+        <div className="card" style={{ width: "520px" }}>
 
-          <select name="pacienteId" value={form.pacienteId} onChange={handleChange} required>
-            <option value="">Seleccione paciente</option>
-            {pacientes.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.nombres} {p.apellidos} - {p.correo}
-              </option>
-            ))}
-          </select>
+          <h2 className="page-title">Agendar cita</h2>
 
-          <br /><br />
+          <form className="form" onSubmit={handleSubmit}>
 
-          <select
-            name="especialidadId"
-            value={form.especialidadId}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                especialidadId: e.target.value,
-                profesionalId: "",
-                hora: ""
-              })
-            }
-            required
-          >
-            <option value="">Seleccione especialidad</option>
-            {especialidades.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.nombre}
-              </option>
-            ))}
-          </select>
+            <select
+              className="input"
+              name="pacienteId"
+              value={form.pacienteId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccione paciente</option>
+              {pacientes.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.nombres} {p.apellidos} - {p.correo}
+                </option>
+              ))}
+            </select>
 
-          <br /><br />
+            <select
+              className="input"
+              name="especialidadId"
+              value={form.especialidadId}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  especialidadId: e.target.value,
+                  profesionalId: "",
+                  hora: ""
+                })
+              }
+              required
+            >
+              <option value="">Seleccione especialidad</option>
+              {especialidades.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.nombre}
+                </option>
+              ))}
+            </select>
 
-          <select
-            name="profesionalId"
-            value={form.profesionalId}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                profesionalId: e.target.value,
-                hora: ""
-              })
-            }
-            disabled={!form.especialidadId}
-            required
-          >
-            <option value="">Seleccione profesional</option>
-            {profesionales.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.usuario?.nombres} {p.usuario?.apellidos} - {p.especialidad?.nombre} - {p.horaInicio} a {p.horaFin}
-              </option>
-            ))}
-          </select>
+            <select
+              className="input"
+              name="profesionalId"
+              value={form.profesionalId}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  profesionalId: e.target.value,
+                  hora: ""
+                })
+              }
+              disabled={!form.especialidadId}
+              required
+            >
+              <option value="">Seleccione profesional</option>
+              {profesionales.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.usuario?.nombres} {p.usuario?.apellidos} - {p.especialidad?.nombre} - {p.horaInicio} a {p.horaFin}
+                </option>
+              ))}
+            </select>
 
-          <br /><br />
+            <input
+              className="input"
+              type="date"
+              name="fecha"
+              value={form.fecha}
+              onChange={handleChange}
+              required
+            />
 
-          <input
-            type="date"
-            name="fecha"
-            value={form.fecha}
-            onChange={handleChange}
-            required
-          />
+            <select
+              className="input"
+              name="hora"
+              value={form.hora}
+              onChange={handleChange}
+              disabled={!form.profesionalId}
+              required
+            >
+              <option value="">Seleccione hora</option>
+              {horasDisponibles.map((hora) => (
+                <option key={hora} value={hora}>
+                  {hora}
+                </option>
+              ))}
+            </select>
 
-          <br /><br />
+            <textarea
+              className="input"
+              name="motivo"
+              placeholder="Motivo"
+              value={form.motivo}
+              onChange={handleChange}
+            />
 
-          <select
-            name="hora"
-            value={form.hora}
-            onChange={handleChange}
-            disabled={!form.profesionalId}
-            required
-          >
-            <option value="">Seleccione hora</option>
-            {horasDisponibles.map((hora) => (
-              <option key={hora} value={hora}>
-                {hora}
-              </option>
-            ))}
-          </select>
+            <textarea
+              className="input"
+              name="observaciones"
+              placeholder="Observaciones / derivación"
+              value={form.observaciones}
+              onChange={handleChange}
+            />
 
-          <br /><br />
+            <button className="btn btn-primary" type="submit">
+              Agendar cita
+            </button>
 
-          <textarea
-            name="motivo"
-            placeholder="Motivo"
-            value={form.motivo}
-            onChange={handleChange}
-          />
+          </form>
 
-          <br /><br />
+        </div>
 
-          <textarea
-            name="observaciones"
-            placeholder="Observaciones / derivación"
-            value={form.observaciones}
-            onChange={handleChange}
-          />
-
-          <br /><br />
-
-          <button type="submit">Agendar cita</button>
-        </form>
       </div>
 
       <Footer />

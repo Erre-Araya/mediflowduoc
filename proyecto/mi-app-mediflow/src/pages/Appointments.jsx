@@ -23,38 +23,60 @@ export default function Appointments() {
 
   return (
     <>
-      <Header />
+    <Header />
 
-      <div style={{ padding: "20px" }}>
-        <h2>Mis Citas</h2>
+    <div className="page-container">
 
-        <table border="1" cellPadding="10">
-          <thead>
-            <tr>
-              <th>Especialidad</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Estado</th>
-              <th>Motivo</th>
-              <th>Profesional</th>
-            </tr>
-          </thead>
-          <tbody>
-            {citas.map((cita) => (
-              <tr key={cita.id}>
-                <td>{cita.especialidad?.nombre}</td>
-                <td>{cita.fecha}</td>
-                <td>{cita.hora}</td>
-                <td>{cita.estadoCita}</td>
-                <td>{cita.motivo} </td>
-                <td>{cita.profesional?.usuario?.nombres} {cita.profesional?.usuario?.apellidos}</td>
+      <h2 className="page-title">Mis citas</h2>
+
+      <div className="card">
+
+        <div className="table-container">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Especialidad</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Estado</th>
+                <th>Motivo</th>
+                <th>Profesional</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {citas.length === 0 ? (
+                <tr>
+                  <td colSpan="6">No tienes citas registradas</td>
+                </tr>
+              ) : (
+                citas.map((cita) => (
+                  <tr key={cita.id}>
+                    <td>{cita.especialidad?.nombre}</td>
+                    <td>{cita.fecha}</td>
+                    <td>{cita.hora}</td>
+                    <td>{cita.estadoCita}</td>
+                    <td>{cita.motivo}</td>
+                    <td>
+                      {cita.profesional?.usuario?.nombres}{" "}
+                      {cita.profesional?.usuario?.apellidos}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+
+          </table>
+
+        </div>
+
       </div>
 
-      <Footer />
-    </>
+    </div>
+
+    <Footer />
+  </>
   );
 }

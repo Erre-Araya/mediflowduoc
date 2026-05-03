@@ -45,27 +45,39 @@ export default function AdminCreateSpecialty() {
         <>
         <Header />
 
-        <div style={{ padding: "20px" }}>
-            <h2>Crear Especialidad</h2>
+        <div className="page-container" style={{ display: "flex", justifyContent: "center" }}>
 
-            <form onSubmit={handleSubmit}>
-            <input
+            <div className="card" style={{ width: "400px" }}>
+
+            <h2 className="page-title">Crear Especialidad</h2>
+
+            <form className="form" onSubmit={handleSubmit}>
+
+                <input
+                className="input"
                 name="nombre"
                 placeholder="Nombre especialidad"
                 value={form.nombre}
                 onChange={(e) => setForm({ ...form, nombre: e.target.value })}
                 required
-            />
+                />
 
-            <input
+                <input
+                className="input"
                 name="descripcion"
                 placeholder="Descripción"
                 value={form.descripcion}
                 onChange={(e) => setForm({ ...form, descripcion: e.target.value })}
-            />
+                />
 
-            <button type="submit">Crear especialidad</button>
+                <button className="btn btn-primary" type="submit">
+                Crear especialidad
+                </button>
+
             </form>
+
+            </div>
+
         </div>
 
         <Footer />

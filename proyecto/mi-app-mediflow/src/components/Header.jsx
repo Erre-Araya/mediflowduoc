@@ -24,6 +24,7 @@ export default function Header() {
             <Link to="/patients">Pacientes</Link>
             <Link to="/profesional/agendar">Agendar paciente</Link>
             <Link to="/create-patient">Crear paciente</Link>
+            <Link to="/calendar">Calendario</Link>
           </>
         )}
 
@@ -32,6 +33,7 @@ export default function Header() {
             <Link to="/admin/profesionales/crear">Crear profesional</Link>
             <Link to="/admin/especialidades/crear">Crear especialidad</Link>
             <Link to="/create-patient">Crear paciente</Link>
+            <Link to="/calendar">Calendario</Link>
           </>
         )}
       </nav>

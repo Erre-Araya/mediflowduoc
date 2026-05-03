@@ -83,43 +83,108 @@ export default function CreatePatient() {
     <>
       <Header />
 
-      <div style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
-        <h2>Crear paciente</h2>
+      <div className="page-container" style={{ display: "flex", justifyContent: "center" }}>
 
-        {mensaje && <p style={{ color: "green" }}>{mensaje}</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        <div className="card" style={{ width: "500px" }}>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <input name="run" placeholder="RUN (sin puntos ni guión)" value={form.run} onChange={handleChange} />
-          <input name="nombres" placeholder="Nombres" value={form.nombres} onChange={handleChange} required />
-          <input name="apellidos" placeholder="Apellidos" value={form.apellidos} onChange={handleChange} required />
-          <input name="correo" type="email" placeholder="Correo electrónico" value={form.correo} onChange={handleChange} required />
+          <h2 className="page-title">Crear paciente</h2>
 
-          <label>Región</label>
-          <select name="regionId" value={form.regionId} onChange={handleChange}>
-            <option value="">Selecciona región</option>
-            {regiones.map(r => (
-              <option key={r.id} value={r.id}>{r.nombre}</option>
-            ))}
-          </select>
+          {mensaje && <p className="msg-success">{mensaje}</p>}
+          {error && <p className="msg-error">{error}</p>}
 
-          <label>Comuna</label>
-          <select name="comunaId" value={form.comunaId} onChange={handleChange} disabled={!form.regionId}>
-            <option value="">Selecciona comuna</option>
-            {comunas.map(c => (
-              <option key={c.id} value={c.id}>{c.nombre}</option>
-            ))}
-          </select>
+          <form className="form" onSubmit={handleSubmit}>
 
-          <input name="direccion" placeholder="Dirección" value={form.direccion} onChange={handleChange} />
-          <input name="telefono" placeholder="Teléfono" value={form.telefono} onChange={handleChange} />
+            <input
+              className="input"
+              name="run"
+              placeholder="RUN (sin puntos ni guión)"
+              value={form.run}
+              onChange={handleChange}
+            />
 
-          <p style={{ fontSize: "13px", color: "#666" }}>
-            La contraseña temporal será <strong>1234</strong>. El paciente puede cambiarla después.
-          </p>
+            <input
+              className="input"
+              name="nombres"
+              placeholder="Nombres"
+              value={form.nombres}
+              onChange={handleChange}
+              required
+            />
 
-          <button type="submit">Crear paciente</button>
-        </form>
+            <input
+              className="input"
+              name="apellidos"
+              placeholder="Apellidos"
+              value={form.apellidos}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              className="input"
+              name="correo"
+              type="email"
+              placeholder="Correo electrónico"
+              value={form.correo}
+              onChange={handleChange}
+              required
+            />
+
+            <label>Región</label>
+            <select
+              className="input"
+              name="regionId"
+              value={form.regionId}
+              onChange={handleChange}
+            >
+              <option value="">Selecciona región</option>
+              {regiones.map(r => (
+                <option key={r.id} value={r.id}>{r.nombre}</option>
+              ))}
+            </select>
+
+            <label>Comuna</label>
+            <select
+              className="input"
+              name="comunaId"
+              value={form.comunaId}
+              onChange={handleChange}
+              disabled={!form.regionId}
+            >
+              <option value="">Selecciona comuna</option>
+              {comunas.map(c => (
+                <option key={c.id} value={c.id}>{c.nombre}</option>
+              ))}
+            </select>
+
+            <input
+              className="input"
+              name="direccion"
+              placeholder="Dirección"
+              value={form.direccion}
+              onChange={handleChange}
+            />
+
+            <input
+              className="input"
+              name="telefono"
+              placeholder="Teléfono"
+              value={form.telefono}
+              onChange={handleChange}
+            />
+
+            <p style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
+              La contraseña temporal será <strong>1234</strong>. El paciente puede cambiarla después.
+            </p>
+
+            <button className="btn btn-primary" type="submit">
+              Crear paciente
+            </button>
+
+          </form>
+
+        </div>
+
       </div>
 
       <Footer />

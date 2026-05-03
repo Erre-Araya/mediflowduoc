@@ -1,26 +1,10 @@
-.register{
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
+.register {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
 }
 
-.form{
-    width: 350px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background: white;
-}
-
-.h2{
-    text-align: center;
-}
-
-.button{
-    width: 100%;
-    padding: 10px;
-    background: #0B3C5D;
-    color: white;
-    border: none;
-    border-radius: 5px;
+.register .card {
+  width: 100%;
+  max-width: 400px;
 }

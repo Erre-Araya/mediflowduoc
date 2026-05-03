@@ -19,6 +19,7 @@ public interface CitaRepository extends JpaRepository <Cita, Long>{
     List<Cita> findByUsuario_Id(Long usuarioId);
     boolean existsByProfesional_IdAndFechaAndHora(Long profesionalId, LocalDate fecha, LocalTime hora);
     List<Cita> findByProfesional_Usuario_Id(Long usuarioId);
+    List<Cita> findByFecha(LocalDate fecha);
     
     @Query("SELECT DISTINCT c.usuario FROM Cita c WHERE c.profesional.usuario.id = :usuarioId")
     List<Usuario> findPacientesByProfesionalUsuarioId(@Param("usuarioId") Long usuarioId);

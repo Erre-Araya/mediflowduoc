@@ -108,4 +108,8 @@ public class CitaService {
 
         return citaRepository.save(cita);
     }
+
+    public List<Cita> obtenerPorFecha(LocalDate fecha) {
+        return citaRepository.findByFecha(fecha);
+    }
 }

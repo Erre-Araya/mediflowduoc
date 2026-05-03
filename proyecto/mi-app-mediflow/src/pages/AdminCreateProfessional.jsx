@@ -77,30 +77,95 @@ export default function AdminCreateProfessional() {
     <>
         <Header />
 
-        <div style={{ padding: "20px" }}>
-            <h2>Crear Profesional</h2>
+        <div className="page-container" style={{ display: "flex", justifyContent: "center" }}>
 
-            <form onSubmit={handleSubmit}>
-            <input name="nombres" placeholder="Nombres" value={form.nombres} onChange={handleChange} />
-            <input name="apellidos" placeholder="Apellidos" value={form.apellidos} onChange={handleChange} />
-            <input name="correo" placeholder="Correo" value={form.correo} onChange={handleChange} />
-            <input name="password" type="password" placeholder="Contraseña" value={form.password} onChange={handleChange} />
+            <div className="card" style={{ width: "450px" }}>
 
-            <select name="especialidadId" value={form.especialidadId} onChange={handleChange} required>
+            <h2 className="page-title">Crear Profesional</h2>
+
+            <form className="form" onSubmit={handleSubmit}>
+
+                <input
+                className="input"
+                name="nombres"
+                placeholder="Nombres"
+                value={form.nombres}
+                onChange={handleChange}
+                />
+
+                <input
+                className="input"
+                name="apellidos"
+                placeholder="Apellidos"
+                value={form.apellidos}
+                onChange={handleChange}
+                />
+
+                <input
+                className="input"
+                name="correo"
+                placeholder="Correo"
+                value={form.correo}
+                onChange={handleChange}
+                />
+
+                <input
+                className="input"
+                name="password"
+                type="password"
+                placeholder="Contraseña"
+                value={form.password}
+                onChange={handleChange}
+                />
+
+                <select
+                className="input"
+                name="especialidadId"
+                value={form.especialidadId}
+                onChange={handleChange}
+                required
+                >
                 <option value="">Seleccione especialidad</option>
                 {especialidades.map((e) => (
-                <option key={e.id} value={e.id}>
+                    <option key={e.id} value={e.id}>
                     {e.nombre}
-                </option>
+                    </option>
                 ))}
-            </select>
+                </select>
 
-            <input name="numeroRegistro" placeholder="Número de registro" value={form.numeroRegistro} onChange={handleChange} />
-            <input type="time" name="horaInicio" value={form.horaInicio} onChange={handleChange} required/>
-            <input type="time" name="horaFin" value={form.horaFin} onChange={handleChange} required/>
+                <input
+                className="input"
+                name="numeroRegistro"
+                placeholder="Número de registro"
+                value={form.numeroRegistro}
+                onChange={handleChange}
+                />
 
-            <button type="submit">Crear profesional</button>
+                <input
+                className="input"
+                type="time"
+                name="horaInicio"
+                value={form.horaInicio}
+                onChange={handleChange}
+                required
+                />
+
+                <input
+                className="input"
+                type="time"
+                name="horaFin"
+                value={form.horaFin}
+                onChange={handleChange}
+                required
+                />
+
+                <button className="btn btn-primary" type="submit">
+                Crear profesional
+                </button>
+
             </form>
+
+            </div>
         </div>
 
         <Footer />

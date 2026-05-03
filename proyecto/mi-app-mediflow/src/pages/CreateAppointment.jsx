@@ -104,13 +104,18 @@ export default function CreateAppointment() {
 
   return (
     <>
-      <Header />
+    <Header />
 
-      <div style={{ padding: "20px" }}>
-        <h2>Agendar Cita</h2>
+    <div className="page-container" style={{ display: "flex", justifyContent: "center" }}>
 
-        <form onSubmit={handleSubmit}>
+      <div className="card" style={{ width: "520px" }}>
+
+        <h2 className="page-title">Agendar cita</h2>
+
+        <form className="form" onSubmit={handleSubmit}>
+
           <select
+            className="input"
             name="especialidadId"
             value={form.especialidadId}
             onChange={(e) =>
@@ -132,9 +137,8 @@ export default function CreateAppointment() {
             ))}
           </select>
 
-          <br /><br />
-
           <select
+            className="input"
             name="profesionalId"
             value={form.profesionalId}
             onChange={(e) =>
@@ -156,9 +160,8 @@ export default function CreateAppointment() {
             ))}
           </select>
 
-          <br /><br />
-
           <input
+            className="input"
             type="date"
             name="fecha"
             value={form.fecha}
@@ -166,9 +169,8 @@ export default function CreateAppointment() {
             required
           />
 
-          <br /><br />
-
           <select
+            className="input"
             name="hora"
             value={form.hora}
             onChange={handleChange}
@@ -184,22 +186,25 @@ export default function CreateAppointment() {
             ))}
           </select>
 
-          <br /><br />
-
           <textarea
+            className="input"
             name="motivo"
             placeholder="Motivo"
             value={form.motivo}
             onChange={handleChange}
           />
 
-          <br /><br />
+          <button className="btn btn-primary" type="submit">
+            Guardar cita
+          </button>
 
-          <button type="submit">Guardar</button>
         </form>
+
       </div>
 
-      <Footer />
-    </>
+    </div>
+
+    <Footer />
+  </>
   );
 }

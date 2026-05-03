@@ -42,67 +42,105 @@ export default function ProfessionalAppointments() {
     <>
     <Header />
 
-    <div style={{ padding: "20px" }}>
-        <h2>Mis citas</h2>
+    <div className="page-container">
 
-        <table border="1" cellPadding="10">
-        <thead>
-            <tr>
-              <th>Paciente</th>
-              <th>Especialidad</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Motivo</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-        </thead>
+      <h2 className="page-title">Mis citas</h2>
 
-        <tbody>
-            {citas.length === 0 ? (
+      <div className="card">
+
+        <div className="table-container">
+
+          <table>
+
+            <thead>
               <tr>
-                <td colSpan="7">No tienes citas agendadas</td>
+                <th>Paciente</th>
+                <th>Especialidad</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
               </tr>
-            ) : (
-              citas.map((cita) => (
-                <tr key={cita.id}>
-                  <td>
-                    {cita.usuario?.nombres} {cita.usuario?.apellidos}
-                  </td>
-                  <td>{cita.especialidad?.nombre}</td>
-                  <td>{cita.fecha}</td>
-                  <td>{cita.hora}</td>
-                  <td>{cita.motivo}</td>
-                  <td>{cita.estadoCita}</td>
-                  <td>
-                    {cita.estadoCita === "PENDIENTE" && (
-                        <>
-                        <button onClick={() => cambiarEstado(cita.id, "CONFIRMADA")}>Confirmar</button>
+            </thead>
 
-                        <button onClick={() => cambiarEstado(cita.id, "CANCELADA")}>Cancelar</button>
-                        </>
-                    )}
-
-                    {cita.estadoCita === "CONFIRMADA" && (
-                        <>
-                        <button onClick={() => cambiarEstado(cita.id, "FINALIZADA")}>Finalizar</button>
-
-                        <button onClick={() => cambiarEstado(cita.id, "CANCELADA")}>Cancelar</button>
-                        </>
-                    )}
-
-                    {(cita.estadoCita === "FINALIZADA" || cita.estadoCita === "CANCELADA") && (
-                        <span>Sin acciones</span>
-                    )}
-                </td>
+            <tbody>
+              {citas.length === 0 ? (
+                <tr>
+                  <td colSpan="7">No tienes citas agendadas</td>
                 </tr>
-              ))
-            )}
-        </tbody>
-        </table>
+              ) : (
+                citas.map((cita) => (
+                  <tr key={cita.id}>
+                    <td>
+                      {cita.usuario?.nombres} {cita.usuario?.apellidos}
+                    </td>
+                    <td>{cita.especialidad?.nombre}</td>
+                    <td>{cita.fecha}</td>
+                    <td>{cita.hora}</td>
+                    <td>{cita.motivo}</td>
+                    <td>{cita.estadoCita}</td>
+
+                    <td style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+
+                      {cita.estadoCita === "PENDIENTE" && (
+                        <>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => cambiarEstado(cita.id, "CONFIRMADA")}
+                          >
+                            Confirmar
+                          </button>
+
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => cambiarEstado(cita.id, "CANCELADA")}
+                          >
+                            Cancelar
+                          </button>
+                        </>
+                      )}
+
+                      {cita.estadoCita === "CONFIRMADA" && (
+                        <>
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => cambiarEstado(cita.id, "FINALIZADA")}
+                          >
+                            Finalizar
+                          </button>
+
+                          <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => cambiarEstado(cita.id, "CANCELADA")}
+                          >
+                            Cancelar
+                          </button>
+                        </>
+                      )}
+
+                      {(cita.estadoCita === "FINALIZADA" || cita.estadoCita === "CANCELADA") && (
+                        <span style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>
+                          Sin acciones
+                        </span>
+                      )}
+
+                    </td>
+
+                  </tr>
+                ))
+              )}
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
     </div>
 
     <Footer />
-    </>
+  </>
   );
 }
