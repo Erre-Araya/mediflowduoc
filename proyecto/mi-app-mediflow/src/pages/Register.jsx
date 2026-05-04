@@ -82,24 +82,38 @@ export default function Register() {
           <input className="input" name="nombres" placeholder="Nombres" onChange={handleChange}/>
           <input className="input" name="apellidos" placeholder="Apellidos" onChange={handleChange}/>
           <input className="input" name="correo" placeholder="Correo" onChange={handleChange}/>
-          <input className="input" name="password" type="password" placeholder="Contraseña" onChange={handleChange}/>
-
-          <select className="input" name="regionId" onChange={handleChange}>
-            <option>Selecciona región</option>
-            {regiones.map(r => (
-              <option key={r.id} value={r.id}>{r.nombre}</option>
-            ))}
-          </select>
-
-          <select className="input" name="comunaId" onChange={handleChange}>
-            <option>Selecciona comuna</option>
-            {comunas.map(c => (
-              <option key={c.id} value={c.id}>{c.nombre}</option>
-            ))}
-          </select>
-
-          <input className="input" name="direccion" placeholder="Dirección" onChange={handleChange}/>
           <input className="input" name="telefono" placeholder="Teléfono" onChange={handleChange}/>
+          <input className="input" name="direccion" placeholder="Dirección" onChange={handleChange}/>
+
+          <select
+                className="input"
+                value={form.regionId}
+                onChange={e =>
+                  setForm({ ...form, regionId: e.target.value, comunaId: "" })
+                }
+              >
+                <option value="">Selecciona región</option>
+                {regiones.map(r => (
+                  <option key={r.id} value={r.id}>{r.nombre}</option>
+                ))}
+              </select>
+
+              <select
+                className="input"
+                value={form.comunaId}
+                onChange={e => setForm({ ...form, comunaId: e.target.value })}
+                disabled={!form.regionId}
+              >
+                <option value="">Selecciona comuna</option>
+                {comunas.map(c => (
+                  <option key={c.id} value={c.id}>{c.nombre}</option>
+                ))}
+              </select>
+
+          <input className="input" name="password" type="password" placeholder="Contraseña" onChange={handleChange}/>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
+            Luego podrás ingresar con tu correo y contraseña.
+          </p>
 
           <button className="btn btn-primary" type="submit">
             Registrarse

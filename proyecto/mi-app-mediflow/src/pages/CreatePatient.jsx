@@ -16,7 +16,7 @@ export default function CreatePatient() {
     nombres: "",
     apellidos: "",
     correo: "",
-    password: "1234", 
+    password: "1234pac", 
     regionId: "",
     comunaId: "",
     direccion: "",
@@ -174,7 +174,7 @@ export default function CreatePatient() {
             </select>
 
             <p style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
-              La contraseña temporal será <strong>1234</strong>. El paciente puede cambiarla después.
+              El paciente recibirá la contraseña temporal que podrá cambiar al ingresar.
             </p>
 
             <button className="btn btn-primary" type="submit">
