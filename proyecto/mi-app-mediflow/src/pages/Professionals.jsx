@@ -64,7 +64,7 @@ export default function Professionals() {
       nombres: "",
       apellidos: "",
       correo: "",
-      password: "1234p",
+      password: "1234prof",
       especialidadId: "",
       numeroRegistro: "",
       horaInicio: "",
@@ -234,8 +234,7 @@ export default function Professionals() {
                 required />
 
               <p style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
-                El profesional recibirá la contraseña temporal <strong>1234</strong>.
-                Podrá cambiarla al ingresar.
+                El paciente recibirá la contraseña temporal que podrá cambiar al ingresar.
               </p>
 
               {/* Select de especialidad con link para crear una nueva */}

@@ -7,6 +7,7 @@ export default function Patients() {
 
   // Lista de pacientes
   const [patients, setPatients] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
 
   // Control del modal de crear paciente (solo admin)
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -29,7 +30,7 @@ export default function Patients() {
     regionId: "",
     comunaId: "",
     direccion: "",
-    password: "1234",
+    password: "1234pac",
     rol: "PACIENTE"
   });
 
@@ -80,7 +81,7 @@ export default function Patients() {
       regionId: "",
       comunaId: "",
       direccion: "",
-      password: "1234",
+      password: "1234pac",
       rol: "PACIENTE"
     });
     setMensaje("");
@@ -109,7 +110,7 @@ export default function Patients() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al crear paciente");
 
-      setMensaje("Paciente creado correctamente. Contraseña temporal: 1234");
+      setMensaje("Paciente creado correctamente. Contraseña temporal: 1234pac");
 
       // Actualiza la tabla sin cerrar el modal,
       // así el admin puede crear otro sin volver a abrirlo
@@ -122,6 +123,12 @@ export default function Patients() {
       setError(err.message);
     }
   };
+
+  const pacientesFiltrados = patients.filter(p =>
+    `${p.nombres} ${p.apellidos} ${p.correo}`
+      .toLowerCase()
+      .includes(busqueda.toLowerCase())
+  );
 
   if (!user || (user.rol !== "PROFESIONAL" && user.rol !== "ADMIN")) {
     return (
@@ -145,25 +152,38 @@ export default function Patients() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "24px"
+            marginBottom: "24px",
+            gap: "16px"
           }}>
             <h2 className="page-title" style={{ margin: 0 }}>
               {user.rol === "PROFESIONAL" ? "Mis pacientes" : "Pacientes"}
             </h2>
 
-            {user.rol === "ADMIN" && (
-              <button
-                className="btn btn-primary"
-                style={{ width: "auto" }}
-                onClick={abrirModal}
-              >
-                + Crear paciente
-              </button>
-            )}
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+
+              <input
+                className="input"
+                placeholder="Buscar paciente..."
+                value={busqueda}
+                onChange={e => setBusqueda(e.target.value)}
+                style={{ maxWidth: "220px" }}
+              />
+
+              {user.rol === "ADMIN" && (
+                <button
+                  className="btn btn-primary"
+                  style={{ width: "auto" }}
+                  onClick={abrirModal}
+                >
+                  + Crear paciente
+                </button>
+              )}
+
+            </div>
           </div>
 
           {/* Tabla de pacientes */}
-          {patients.length === 0 ? (
+          {pacientesFiltrados.length === 0 ? (
             <p style={{ color: "var(--color-text-muted)" }}>
               No hay pacientes para mostrar.
             </p>
@@ -179,7 +199,7 @@ export default function Patients() {
                   </tr>
                 </thead>
                 <tbody>
-                  {patients.map(p => (
+                  {pacientesFiltrados.map(p => (
                     <tr key={p.id}>
                       <td>{p.nombres}</td>
                       <td>{p.apellidos}</td>
@@ -257,6 +277,13 @@ export default function Patients() {
                 onChange={e => setForm({ ...form, telefono: e.target.value })}
               />
 
+              <input
+                className="input"
+                placeholder="Dirección"
+                value={form.direccion}
+                onChange={e => setForm({ ...form, direccion: e.target.value })}
+              />
+
               <select
                 className="input"
                 value={form.regionId}
@@ -282,16 +309,8 @@ export default function Patients() {
                 ))}
               </select>
 
-              <input
-                className="input"
-                placeholder="Dirección"
-                value={form.direccion}
-                onChange={e => setForm({ ...form, direccion: e.target.value })}
-              />
-
               <p style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
-                El paciente recibirá la contraseña temporal{" "}
-                <strong>1234</strong>. Podrá cambiarla al ingresar.
+                El paciente recibirá la contraseña temporal que podrá cambiar al ingresar.
               </p>
 
               <div style={{ display: "flex", gap: "10px" }}>

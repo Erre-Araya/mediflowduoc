@@ -76,7 +76,7 @@ public class CitaService {
                 .profesional(profesional)
                 .fecha(fecha)
                 .hora(hora)
-                .estadoCita(EstadoCita.PENDIENTE)
+                .estadoCita(EstadoCita.AGENDADA)
                 .motivo(motivo)
                 .observaciones(observaciones)
                 .build();

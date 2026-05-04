@@ -33,7 +33,7 @@ public class Usuario {
     private long id;
 
     @Column(unique = true, length = 12)
-    @Pattern(regexp = "^[0-9]{7,8}[0-9Kk]$", message = "RUN invalido")
+    @Pattern(regexp = "^[0-9]{7,8}[0-9Kk]$", message = "RUN inválido")
     private String run;
 
     @NotBlank(message = "El nombre es requerido")
@@ -47,13 +47,13 @@ public class Usuario {
     private String apellidos;
 
     @NotBlank(message = "El correo es requerido")
-    @Email(message = "Correo electronico invalido")
+    @Email(message = "Correo electrónico inválido")
     @Size(max = 100, message = "El correo no puede superar 100 caracteres")
     @Column(nullable = false, unique = true, length = 100)
     private String correo;
 
-    @NotBlank(message = "La contrasena es requerida")
-    @Size(min = 4, message = "La contrasena debe tener al menos 4 caracteres")
+    @NotBlank(message = "La contraseña es requerida")
+    @Size(min = 4, message = "La contraseña debe tener al menos 4 caracteres")
     @Column(nullable = false)
     private String password;
 
@@ -62,7 +62,7 @@ public class Usuario {
     @Builder.Default
     private Rol rol = Rol.PACIENTE;
 
-    @Size(max = 200, message = "La direccion no puede superar 200 caracteres")
+    @Size(max = 200, message = "La dirección no puede superar 200 caracteres")
     @Column(length = 200)
     private String direccion;
 

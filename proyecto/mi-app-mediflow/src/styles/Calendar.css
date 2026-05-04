@@ -7,6 +7,11 @@
   flex-wrap: wrap;
 }
 
+.calendar-filtros {
+  display: flex;
+  gap: 12px;
+}
+
 .calendar-nav {
   display: flex;
   align-items: center;
@@ -106,13 +111,15 @@
   border-left: 1px solid var(--color-border);
   height: 52px;
   vertical-align: middle;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  border-radius: 8px;
 }
 
 /* libre (clickeable) */
 .calendar-bloque.libre {
   cursor: pointer;
   transition: all 0.15s ease;
+  background: #121c34e1;
 }
 
 .calendar-bloque.libre:hover {
@@ -124,6 +131,35 @@
 .calendar-bloque.ocupado {
   background: rgba(56, 189, 248, 0.06);
   cursor: not-allowed;
+}
+
+.calendar-bloque.ocupado.agendada {
+  background-color: #3597de;
+  color: rgb(48, 48, 48);
+}
+
+.calendar-bloque.ocupado.confirmada {
+  background-color: #a88b21;
+  color: rgb(48, 48, 48);
+}
+
+.calendar-bloque.ocupado.cancelada {
+  background-color: #cb7e7e;
+  color: rgb(48, 48, 48);
+}
+
+.calendar-bloque.ocupado.no_asistida {
+  background-color: #553b97;
+  color: rgb(48, 48, 48);
+}
+
+.calendar-bloque.ocupado.asistida {
+  background-color: #3a9480;
+  color: rgb(48, 48, 48);
+}
+
+.calendar-bloque:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* fuera de horario */
@@ -149,37 +185,13 @@
   color: var(--color-text);
 }
 
-/* ========================= */
-/* BADGES */
-/* ========================= */
-
 .calendar-badge {
-  font-size: 10px;
+  font-size: 11px;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 600;
   width: fit-content;
   display: inline-block;
-}
-
-.calendar-badge.pendiente {
-  background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
-}
-
-.calendar-badge.confirmada {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-}
-
-.calendar-badge.cancelada {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-}
-
-.calendar-badge.finalizada {
-  background: rgba(148, 163, 184, 0.2);
-  color: #94a3b8;
 }
 
 /* ========================= */
@@ -200,10 +212,11 @@
 .modal-card {
   background: var(--bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 32px;
   width: 100%;
   max-width: 460px;
+  animation: fadeIn 0.2s ease;
 }
 
 .modal-title {
@@ -281,4 +294,14 @@
   padding: 12px 14px;
   color: var(--color-text-muted);
   font-size: 13px;
+}
+
+.input::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
 }

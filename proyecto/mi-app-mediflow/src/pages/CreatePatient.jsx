@@ -122,12 +122,28 @@ export default function CreatePatient() {
 
             <input
               className="input"
+              name="telefono"
+              placeholder="Teléfono"
+              value={form.telefono}
+              onChange={handleChange}
+            />
+            
+            <input
+              className="input"
               name="correo"
               type="email"
               placeholder="Correo electrónico"
               value={form.correo}
               onChange={handleChange}
               required
+            />
+
+            <input
+              className="input"
+              name="direccion"
+              placeholder="Dirección"
+              value={form.direccion}
+              onChange={handleChange}
             />
 
             <label>Región</label>
@@ -156,22 +172,6 @@ export default function CreatePatient() {
                 <option key={c.id} value={c.id}>{c.nombre}</option>
               ))}
             </select>
-
-            <input
-              className="input"
-              name="direccion"
-              placeholder="Dirección"
-              value={form.direccion}
-              onChange={handleChange}
-            />
-
-            <input
-              className="input"
-              name="telefono"
-              placeholder="Teléfono"
-              value={form.telefono}
-              onChange={handleChange}
-            />
 
             <p style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
               La contraseña temporal será <strong>1234</strong>. El paciente puede cambiarla después.

@@ -2,6 +2,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import Calendar from "./Calendar";
+import Appointments from "./Appointments";
+
 
 export default function Home() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -22,44 +24,23 @@ export default function Home() {
 
           {user?.rol === "PACIENTE" && (
             <>
-              <div className="card">
-                <h3>Mis Citas</h3>
-                <p>Revisa tus citas médicas</p>
-                <Link to="/appointments">Ver citas</Link>
-              </div>
-
-              <div className="card">
-                <h3>Agendar</h3>
-                <p>Crear nueva cita</p>
-                <Link to="/create">Agendar</Link>
-              </div>
+            <Appointments embedded={true} />
             </>
           )}
 
           {user?.rol === "PROFESIONAL" && (
             <>
-              <div className="card">
-                <h3>Mis Citas</h3>
-                <p>Ver citas agendadas conmigo</p>
-                <Link to="/profesional/citas">Ver citas</Link>
-              </div>
-
-              <div className="card">
-                <h3>Pacientes</h3>
-                <p>Listado de pacientes</p>
-                <Link to="/patients">Ver pacientes</Link>
-              </div>
+            <Calendar embedded />
             </>
           )}
 
           {user?.rol === "ADMIN" && (
             <>
-
+            <Calendar embedded />
             </>
           )}
         </div>
 
-      <Calendar embedded={true} />
       </div>
 
       <Footer />
