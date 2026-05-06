@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Header.css";
-import { useNavigate } from "react-router-dom";
+import logo from "../assets/favicon.png"
 
 export default function Header() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -13,7 +13,9 @@ export default function Header() {
 
   return (
     <header className="header">
-      <h1 className="logo">Mediflow</h1>
+      <h1 className="logo">
+        <img src={logo} alt="Mediflow logo" className="logo-img" />
+        Mediflow</h1>
 
       <nav className="nav">
         <Link to="/home">Inicio</Link>
