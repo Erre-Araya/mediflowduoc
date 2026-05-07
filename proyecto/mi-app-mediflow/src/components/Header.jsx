@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Header.css";
 import logo from "../assets/favicon.png"
+import Chat from "./Chat";
 
 export default function Header() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -24,6 +25,7 @@ export default function Header() {
           <>
             <Link to="/appointments">Mis citas</Link>
             <Link to="/create">Agendar</Link>
+            <Chat />
           </>
         )}
 
