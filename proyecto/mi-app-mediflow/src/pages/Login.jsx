@@ -1,72 +1,89 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "../styles/Login.css";
 import { loginUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+export default function Login() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const user = await loginUser(correo, password);
-
-      console.log("USER:", user);
-
       localStorage.setItem("user", JSON.stringify(user));
-
       if (user.debeCambiarPassword === true) {
         navigate("/cambiar-password");
       } else {
         navigate("/home");
       }
-
-    } catch (error) {
+    } catch {
       alert("Credenciales incorrectas");
     }
   };
 
   return (
-    <div className="page-container" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <div className="card" style={{ width: "320px" }}>
-        
-        <h2 className="page-title" style={{ textAlign: "center" }}>
-          Iniciar sesión
-        </h2>
+    <div className="login-page">
+      <div className="login-card">
 
-        {error && <p className="msg-error">{error}</p>}
+        {/* Logo */}
+        <div className="login-logo">
+          <div className="login-logo-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div className="login-logo-title">Mediflow</div>
+          <div className="login-logo-sub">Inicia sesión en tu cuenta</div>
+        </div>
 
         <form className="form" onSubmit={handleSubmit}>
-          <input
-            className="input"
-            type="email"
-            placeholder="Correo"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-            required
-          />
 
-          <input
-            className="input"
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div>
+            <label className="field-label">Correo electrónico</label>
+            <div className="input-icon-wrap">
+              <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              <input
+                className="input"
+                type="email"
+                placeholder="tu@correo.com"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                required
+              />
+            </div>
+          </div>
 
-          <button className="btn btn-primary" type="submit">
+          <div>
+            <label className="field-label">Contraseña</label>
+            <div className="input-icon-wrap">
+              <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input
+                className="input"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          <button className="btn btn-primary" type="submit" style={{ marginTop: "4px" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
             Ingresar
           </button>
 
-          <p style={{ textAlign: "center", fontSize: "0.9rem" }}>
-            ¿Aún no tienes cuenta? <Link to="/register">Regístrate</Link>
+          <p style={{ textAlign: "center", fontSize: "13.5px", color: "var(--text-muted)", marginTop: "4px" }}>
+            ¿Aún no tienes cuenta?{" "}
+            <Link to="/register" style={{ fontWeight: 600 }}>Regístrate</Link>
           </p>
         </form>
 
@@ -74,5 +91,3 @@ function Login() {
     </div>
   );
 }
-
-export default Login;

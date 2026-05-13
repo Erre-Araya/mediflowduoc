@@ -3,7 +3,7 @@ import "../styles/Footer.css"
 export default function Footer() {
   return (
     <footer className="footer">
-      <p>© 2026 Mediflow - App para Centros Médicos</p>
+      © {new Date().getFullYear()} Mediflow · Sistema de gestión de citas médicas
     </footer>
   );
 }
