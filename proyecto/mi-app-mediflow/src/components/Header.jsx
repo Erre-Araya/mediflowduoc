@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/Header.css";
+import logo from "../assets/favicon.png"
+import Chat from "./Chat";
 
 export default function Header() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
