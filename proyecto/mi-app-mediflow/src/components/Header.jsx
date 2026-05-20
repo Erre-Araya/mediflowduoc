@@ -1,7 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/Header.css";
-import logo from "../assets/favicon.png"
-import Chat from "./Chat";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -16,24 +14,28 @@ export default function Header() {
     ? `${user.nombres?.[0] || ""}${user.apellidos?.[0] || ""}`.toUpperCase()
     : "?";
 
-  const rolLabel = { PACIENTE: "Paciente", PROFESIONAL: "Profesional", ADMIN: "Admin" };
+  const rolLabel = {
+    PACIENTE: "Paciente",
+    PROFESIONAL: "Profesional",
+    ADMIN: "Admin",
+  };
 
   return (
     <header className="header">
       <div className="header-inner">
 
         {/* Logo */}
-        <Link to="/home" className="header-logo" style={{ textDecoration: "none" }}>
+        <Link to="/home" className="header-logo">
           <div className="header-logo-icon">
-            {/* heartbeat icon */}
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
           </div>
           <span className="header-logo-text">Mediflow</span>
         </Link>
 
-        {/* Nav links */}
+        {/* Nav */}
         <nav className="header-nav">
           <Link to="/home">Inicio</Link>
 
@@ -43,14 +45,12 @@ export default function Header() {
               <Link to="/create">Agendar</Link>
             </>
           )}
-
           {user?.rol === "PROFESIONAL" && (
             <>
               <Link to="/profesional/citas">Mis citas</Link>
               <Link to="/patients">Pacientes</Link>
             </>
           )}
-
           {user?.rol === "ADMIN" && (
             <>
               <Link to="/professionals">Profesionales</Link>
@@ -59,15 +59,21 @@ export default function Header() {
           )}
         </nav>
 
-        {/* User chip + logout */}
+        {/* Right side */}
         <div className="header-actions">
+
+          {/* ── Interruptor día / noche ── */}
+          <ThemeToggle />
+
           {user && (
             <>
               <div className="user-chip">
                 <div className="user-avatar">{initials}</div>
                 <div>
                   <div className="user-name">{user.nombres}</div>
-                  <div className="user-role-badge">{rolLabel[user.rol] || user.rol}</div>
+                  <div className="user-role-badge">
+                    {rolLabel[user.rol] || user.rol}
+                  </div>
                 </div>
               </div>
 
@@ -77,10 +83,11 @@ export default function Header() {
                 style={{ padding: "7px 14px", fontSize: "13px" }}
                 title="Cerrar sesión"
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                  <polyline points="16 17 21 12 16 7"/>
-                  <line x1="21" y1="12" x2="9" y2="12"/>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
                 </svg>
                 Salir
               </button>
