@@ -8,12 +8,16 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.MediFlow.dto.UsuarioDTO;
+import com.example.MediFlow.model.Comuna;
 import com.example.MediFlow.model.Especialidad;
 import com.example.MediFlow.model.ProfesionalSalud;
+import com.example.MediFlow.model.Region;
 import com.example.MediFlow.model.Usuario;
 import com.example.MediFlow.model.enums.Rol;
+import com.example.MediFlow.repository.ComunaRepository;
 import com.example.MediFlow.repository.EspecialidadRepository;
 import com.example.MediFlow.repository.ProfesionalSaludRepository;
+import com.example.MediFlow.repository.RegionRepository;
 import com.example.MediFlow.repository.UsuarioRepository;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,8 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ProfesionalSaludRepository profesionalSaludRepository;
     private final EspecialidadRepository especialidadRepository;
+    private final RegionRepository regionRepository;
+    private final ComunaRepository comunaRepository;
 
     @Transactional(readOnly = true)
     public List<UsuarioDTO> obtenerTodos(){
@@ -130,28 +136,60 @@ public class UsuarioService {
     }
 
     public UsuarioDTO crearPacienteAdmin(Map<String, Object> request) {
+
+        if (usuarioRepository.existsByCorreo(request.get("correo").toString())) {
+            throw new RuntimeException("Ya existe un usuario con ese correo");
+        }
+
+        String run = request.get("run") != null
+                ? request.get("run").toString()
+                : null;
+
+        if (run != null && !run.isEmpty()) {
+            if (usuarioRepository.existsByRun(run)) {
+                throw new RuntimeException("Usuario con ese RUN ya existe");
+            }
+        }
+
+        Region region = null;
+
+        if (request.get("regionId") != null && !request.get("regionId").toString().isEmpty()) {
+            Long regionId = Long.valueOf(request.get("regionId").toString());
+
+            region = regionRepository.findById(regionId)
+                    .orElseThrow(() -> new RuntimeException("Región no encontrada"));
+        }
+
+        Comuna comuna = null;
+
+        if (request.get("comunaId") != null && !request.get("comunaId").toString().isEmpty()) {
+            Long comunaId = Long.valueOf(request.get("comunaId").toString());
+
+            comuna = comunaRepository.findById(comunaId)
+                    .orElseThrow(() -> new RuntimeException("Comuna no encontrada"));
+
+            if (region == null) {
+                region = comuna.getRegion();
+            }
+        }
+
         Usuario usuario = Usuario.builder()
-                .run((String) request.get("run"))
+                .run(run)
                 .nombres((String) request.get("nombres"))
                 .apellidos((String) request.get("apellidos"))
                 .correo((String) request.get("correo"))
+                .telefono(request.get("telefono") != null ? request.get("telefono").toString() : null)
+                .direccion(request.get("direccion") != null ? request.get("direccion").toString() : null)
+                .region(region)
+                .comuna(comuna)
                 .password("1234pac")
                 .rol(Rol.PACIENTE)
                 .debeCambiarPassword(true)
                 .activo(true)
                 .build();
 
-        if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
-            throw new RuntimeException("Ya existe un usuario con ese correo");
-        }
-
-        if (usuario.getRun() != null && !usuario.getRun().isEmpty()) {
-            if (usuarioRepository.existsByRun(usuario.getRun())) {
-                throw new RuntimeException("Usuario con ese RUN ya existe");
-            }
-        }
-
         Usuario guardado = usuarioRepository.save(usuario);
+
         return UsuarioDTO.fromEntity(guardado);
     }
 
