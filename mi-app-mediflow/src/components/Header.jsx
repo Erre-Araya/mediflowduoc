@@ -23,7 +23,10 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header-inner">
-        <Link to="/home" className="header-logo">
+        <Link
+          to={user ? "/home" : "/"}
+          className="header-logo"
+        >
           <div className="header-logo-icon">
             <svg
               width="18"

@@ -123,6 +123,7 @@ body {
   backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 1px 12px rgba(0,0,0,0.07);
+  overflow: auto;
 }
 
 [data-theme="dark"] .header {

@@ -66,6 +66,7 @@ export default function Register() {
       }
     };
 
+
   return (
     <>
       <Header />
@@ -103,6 +104,9 @@ export default function Register() {
 
           <button className="btn btn-primary" type="submit">
             Registrarse
+          </button>
+          <button type="button" className="btn btn-ghost" onClick={() => navigate("/")}>
+            Volver
           </button>
 
         </form>

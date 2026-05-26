@@ -18,7 +18,12 @@ export default function Login() {
 
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/home");
+      if (user.debeCambiarPassword === true) {
+        navigate("/cambiar-password");
+      } else {
+        navigate("/home");
+      }
+
     } catch (error) {
       alert(error.message || "Credenciales incorrectas");
     }

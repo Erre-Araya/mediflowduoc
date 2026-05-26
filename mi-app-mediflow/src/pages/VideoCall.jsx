@@ -191,6 +191,11 @@ export default function VideoCall() {
   };
 
   const iniciarLlamada = async () => {
+    if (usuario.rol !== "PROFESIONAL") {
+      alert("Debes esperar a que el profesional inicie la llamada.");
+      return;
+    } 
+
     if (!isVideoSocketConnected()) {
       alert("Aún no se conecta el WebSocket. Espera unos segundos.");
       return;

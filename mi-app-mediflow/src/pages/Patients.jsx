@@ -1,6 +1,7 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useEffect, useState } from "react";
+import "../styles/Patients.css";
 
 export default function Patients() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -137,19 +138,14 @@ export default function Patients() {
       <Header />
 
       <div className="page-container">
+        <h2 className="page-title">
+              {user.rol === "PROFESIONAL" ? "Mis pacientes" : "Pacientes"}
+        </h2>
         <div className="card">
 
           {}
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "24px",
-            gap: "16px"
-          }}>
-            <h2 className="page-title" style={{ margin: 0 }}>
-              {user.rol === "PROFESIONAL" ? "Mis pacientes" : "Pacientes"}
-            </h2>
+          <div className="cardDiv">
+            
 
             <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
 
@@ -300,11 +296,11 @@ export default function Patients() {
                   <option key={c.id} value={c.id}>{c.nombre}</option>
                 ))}
               </select>
-
+              
               <p style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
-                El paciente recibirá la contraseña temporal que podrá cambiar al ingresar.
+                El paciente recibirá la contraseña 1234pac temporal que podrá cambiar al ingresar.
               </p>
-
+              <br></br>
               <div style={{ display: "flex", gap: "10px" }}>
                 <button type="submit" className="btn btn-primary">
                   Crear paciente
