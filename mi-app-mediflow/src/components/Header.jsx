@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import Chat from "./Chat";
+
 
 export default function Header() {
   const user = JSON.parse(localStorage.getItem("user") || "null");

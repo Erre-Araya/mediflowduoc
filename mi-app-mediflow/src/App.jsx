@@ -19,6 +19,8 @@ import ChangePassword from "./pages/ChangePassword";
 import VideoCall from "./pages/VideoCall";
 import ClinicalHistory from "./pages/ClinicalHistory";
 import ClinicalHistoryList from "./pages/ClinicalHistoryList";
+import Chat from "./components/Chat";
+
 
 function App() {
   return (
@@ -42,10 +44,11 @@ function App() {
         <Route path="/video-call/:citaId" element={<VideoCall />} />
         <Route path="/profesional/historial/:citaId" element={<ClinicalHistory/>}/>
         <Route path="/historial-clinico" element={<ClinicalHistoryList />}/>
-        <Route path="/profesional/historial-clinico"element={<ClinicalHistoryList />}/>
+        <Route path="/profesional/historial-clinico"element={<ClinicalHistoryList />}/>        
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+        <Chat />
     </BrowserRouter>
   );
 }
