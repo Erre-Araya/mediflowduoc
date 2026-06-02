@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ChatRequest {
+    private Long usuarioId;
     private String mensaje;
     private List<MensajeHistorial> historial;
 

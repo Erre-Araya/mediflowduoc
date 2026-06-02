@@ -44,7 +44,7 @@ function App() {
         <Route path="/video-call/:citaId" element={<VideoCall />} />
         <Route path="/profesional/historial/:citaId" element={<ClinicalHistory/>}/>
         <Route path="/historial-clinico" element={<ClinicalHistoryList />}/>
-        <Route path="/profesional/historial-clinico"element={<ClinicalHistoryList />}/>        
+        <Route path="/profesional/historial-clinico"element={<ClinicalHistoryList />}/>
 
         <Route path="*" element={<NotFound />} />
       </Routes>

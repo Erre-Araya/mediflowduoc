@@ -26,6 +26,17 @@ public class ChatController {
             return ResponseEntity.badRequest()
                 .body(new ChatResponse("El mensaje es demasiado largo. Máximo 1000 caracteres."));
         }
+        String mensaje = request.getMensaje().toLowerCase();
+
+        if (
+            mensaje.startsWith("agendar") ||
+            mensaje.contains("quiero una cita") ||
+            mensaje.contains("quiero agendar") ||
+            mensaje.contains("necesito una cita") ||
+            mensaje.contains("necesito agendar")
+        ) {
+            return ResponseEntity.ok(chatService.agendarCitaDesdeChat(request));
+        }
 
         String respuesta = chatService.consultarOllama(
             request.getMensaje(),
