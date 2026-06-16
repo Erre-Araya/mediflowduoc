@@ -1,0 +1,174 @@
+import { useEffect, useState } from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+
+export default function AdminCreateProfessional() {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const [especialidades, setEspecialidades] = useState([]);
+
+    const [form, setForm] = useState({
+        nombres: "",
+        apellidos: "",
+        correo: "",
+        password: "",
+        especialidadId: "",
+        numeroRegistro: "",
+        horaInicio: "",
+        horaFin: ""
+    });
+
+    if (!user || user.rol !== "ADMIN") {
+        return <p>No tienes acceso</p>;
+    }
+
+    useEffect(() => {
+        fetch("http://localhost:8080/api/especialidades")
+        .then(res => res.json())
+        .then(data => setEspecialidades(Array.isArray(data) ? data : []))
+        .catch(err => console.error(err));
+    }, []);
+
+    const handleChange = (e) => {
+        setForm({
+        ...form,
+        [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+        const res = await fetch("http://localhost:8080/api/profesionales", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            rol: user.rol
+            },
+            body: JSON.stringify(form)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.error || "Error al crear profesional");
+        }
+
+        alert("Profesional creado correctamente");
+
+        setForm({
+            nombres: "",
+            apellidos: "",
+            correo: "",
+            password: "",
+            especialidadId: "",
+            numeroRegistro: "",
+            horarioAtencion: ""
+        });
+
+        } catch (error) {
+        console.error(error);
+        alert(error.message);
+        }
+    };
+
+    return (
+    <>
+        <Header />
+
+        <div className="page-container" style={{ display: "flex", justifyContent: "center" }}>
+
+            <div className="card" style={{ width: "450px" }}>
+
+            <h2 className="page-title">Crear Profesional</h2>
+
+            <form className="form" onSubmit={handleSubmit}>
+
+                <input
+                className="input"
+                name="nombres"
+                placeholder="Nombres"
+                value={form.nombres}
+                onChange={handleChange}
+                />
+
+                <input
+                className="input"
+                name="apellidos"
+                placeholder="Apellidos"
+                value={form.apellidos}
+                onChange={handleChange}
+                />
+
+                <input
+                className="input"
+                name="correo"
+                placeholder="Correo"
+                value={form.correo}
+                onChange={handleChange}
+                />
+
+                <input
+                className="input"
+                name="password"
+                type="password"
+                placeholder="Contraseña"
+                value={form.password}
+                onChange={handleChange}
+                />
+
+                <select
+                className="input"
+                name="especialidadId"
+                value={form.especialidadId}
+                onChange={handleChange}
+                required
+                >
+                <option value="">Seleccione especialidad</option>
+                {especialidades.map((e) => (
+                    <option key={e.id} value={e.id}>
+                    {e.nombre}
+                    </option>
+                ))}
+                </select>
+
+                <input
+                className="input"
+                name="numeroRegistro"
+                placeholder="Número de registro"
+                value={form.numeroRegistro}
+                onChange={handleChange}
+                />
+
+                <input
+                className="input"
+                type="time"
+                name="horaInicio"
+                value={form.horaInicio}
+                onChange={handleChange}
+                required
+                />
+
+                <input
+                className="input"
+                type="time"
+                name="horaFin"
+                value={form.horaFin}
+                onChange={handleChange}
+                required
+                />
+
+                <button className="btn btn-primary" type="submit">
+                Crear profesional
+                </button>
+
+            </form>
+
+            </div>
+        </div>
+
+        <Footer />
+        </>
+    );
+}
