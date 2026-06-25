@@ -178,3 +178,9 @@ Almacena:
 ## 🚀 Estado del Proyecto
 
 🔧 En desarrollo
+
+## Estructura del equipo
+
+* Ayleen Cisterna      QA/FRONTEND
+* Rafael Cuevas        DESARROLLO/DBA
+* Sebastián Esparza    BACKEND/PO
