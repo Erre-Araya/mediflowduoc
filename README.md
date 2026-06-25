@@ -179,7 +179,7 @@ Almacena:
 
 🔧 En desarrollo
 
-## Estructura del equipo
+## 👥 Estructura del equipo
 
 * Ayleen Cisterna      QA/FRONTEND
 * Rafael Cuevas        DESARROLLO/DBA
